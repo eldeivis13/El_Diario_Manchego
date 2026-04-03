@@ -66,4 +66,13 @@ export class AuthService {
     const user = this.currentUser();
     return user !== null && user.rol.toUpperCase() === 'EDITOR';
   }
+
+  isRedactor(): boolean {
+    const user = this.currentUser();
+    return user !== null && user.rol.toUpperCase() === 'REDACTOR';
+  }
+
+  canCreate(): boolean {
+    return this.isEditor() || this.isRedactor();
+  }
 }

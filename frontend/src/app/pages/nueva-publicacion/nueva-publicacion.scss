@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap');
+
+$bg-color: #0b0f19;
+$card-bg: rgba(22, 27, 40, 0.7);
+$primary: #e63946;
+$text-light: #f8f9fa;
+$text-muted: #a0aab2;
+$glass-border: rgba(255, 255, 255, 0.05);
+
+.nueva-pub-container {
+  min-height: 100vh;
+  background-color: $bg-color;
+  background-image: radial-gradient(circle at top left, rgba($primary, 0.1) 0%, transparent 50%);
+  font-family: 'Inter', sans-serif;
+  color: $text-light;
+  padding: 6rem 2rem 4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.content-box {
+  width: 100%;
+  max-width: 900px;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.page-header {
+  margin-bottom: 3rem;
+  text-align: left;
+  
+  .main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+    
+    .highlight {
+      color: $primary;
+    }
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: $text-muted;
+  }
+}
+
+.form-wrapper {
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.article-form {
+  .input-group {
+    margin-bottom: 2rem;
+    
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: $text-muted;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    input, textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid $glass-border;
+      color: $text-light;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary;
+        box-shadow: 0 0 0 2px rgba($primary, 0.2);
+        background: rgba(0, 0, 0, 0.4);
+      }
+      
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .error-hint {
+      color: $primary;
+      font-size: 0.75rem;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 2rem;
+  
+  .input-group {
+    flex: 1;
+  }
+}
+
+.badge-status {
+  display: inline-block;
+  background: rgba($primary, 0.1);
+  color: $primary;
+  border: 1px solid rgba($primary, 0.3);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  
+  &-error {
+    background: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.2);
+    color: lighten($primary, 10%);
+  }
+}
+
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 3rem;
+  
+  .btn-back {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: $text-muted;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+  }
+  
+  .btn-submit {
+    background: $primary;
+    color: #fff;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover:not(:disabled) {
+      background: lighten($primary, 5%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba($primary, 0.3);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.success-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: $card-bg;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  
+  .icon-success {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 2rem;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  
+  p {
+    color: $text-muted;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .page-header .main-title {
+    font-size: 2.5rem;
+  }
+}

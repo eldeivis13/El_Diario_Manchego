@@ -143,6 +143,35 @@
       }
     }
 
+    .btn-new-article {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+        
+        .icon-plus {
+          transform: rotate(90deg);
+        }
+      }
+      
+      .icon-plus {
+        transition: transform 0.3s ease;
+      }
+    }
+
     .user-profile {
       display: flex;
       align-items: center;

@@ -1,0 +1,83 @@
+<div class="nueva-pub-container">
+  <div class="content-box">
+    <!-- Header Area -->
+    <header class="page-header">
+      <h1 class="main-title">Nueva <span class="highlight">Publicación</span></h1>
+      <p class="subtitle">Escribe tu historia para El Diario Manchego.</p>
+    </header>
+
+    <!-- Form Area -->
+    <div class="form-wrapper" *ngIf="!isSuccess(); else successTpl">
+      <form (ngSubmit)="onSubmit()" #articleForm="ngForm" class="article-form">
+        <!-- Title Input -->
+        <div class="input-group">
+          <label for="title">Título de la Noticia</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            [(ngModel)]="title" 
+            placeholder="Introduce un titular impactante..."
+            required
+            #titleInput="ngModel">
+          <div class="error-hint" *ngIf="titleInput.touched && titleInput.invalid">El título es obligatorio.</div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="input-group">
+          <label for="content">Contenido</label>
+          <textarea 
+            id="content" 
+            name="content" 
+            [(ngModel)]="content" 
+            placeholder="Escribe aquí el cuerpo del artículo..."
+            rows="10"
+            required
+            #contentInput="ngModel"></textarea>
+          <div class="error-hint" *ngIf="contentInput.touched && contentInput.invalid">El contenido no puede estar vacío.</div>
+        </div>
+
+        <!-- Date + Meta -->
+        <div class="form-row">
+          <div class="input-group">
+            <label for="fpublicacion">Fecha prevista de publicación</label>
+            <input 
+              type="text" 
+              id="fpublicacion" 
+              name="fpublicacion" 
+              [(ngModel)]="fpublicacion" 
+              placeholder="DD/MM/YYYY"
+              required>
+          </div>
+          <div class="input-group">
+            <label>Estado Inicial</label>
+            <div class="badge-status">BORRADOR</div>
+          </div>
+        </div>
+
+        <!-- Alert messages -->
+        <div class="alert alert-error" *ngIf="errorMessage()">
+          {{ errorMessage() }}
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn-back" routerLink="/home">Cancelar</button>
+          <button type="submit" class="btn-submit" [disabled]="articleForm.invalid || isLoading()">
+            <span *ngIf="!isLoading()">Publicar Borrador</span>
+            <span *ngIf="isLoading()" class="spinner">↻</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success View -->
+    <ng-template #successTpl>
+      <div class="success-state">
+        <i class="icon-success">✨</i>
+        <h2>¡Artículo Creado!</h2>
+        <p>Tu noticia ha sido guardada satisfactoriamente y está lista para revisión. Serás redirigido al inicio en unos segundos...</p>
+        <button class="btn-submit" routerLink="/home">Ir ahora</button>
+      </div>
+    </ng-template>
+  </div>
+</div>
