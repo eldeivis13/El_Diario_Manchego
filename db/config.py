@@ -21,4 +21,10 @@ async def get_conexion():
             maxsize=10
         )
     # create_pool devuelve un pool. acquire() nos da una conexión de ese pool.
-    return await _pool.acquire()
+    conn = await _pool.acquire()
+    
+    # Sobrescribimos el método close para que devuelva la conexión al pool
+    # en lugar de destruir el socket, lo cual agota el pool rápidamente.
+    conn.close = lambda: _pool.release(conn)
+    
+    return conn

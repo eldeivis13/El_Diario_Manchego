@@ -1,7 +1,16 @@
 from fastapi import FastAPI
-from routes  import test_db_routes, auth_routes, articles_routes, sections_routes, users_routes
+from fastapi.middleware.cors import CORSMiddleware
+from routes import test_db_routes, auth_routes, articles_routes, sections_routes, users_routes
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200", "http://127.0.0.1:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")

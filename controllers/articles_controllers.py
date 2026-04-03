@@ -70,7 +70,7 @@ async def get_articles():
         conn = await get_conexion()
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
-                "SELECT titulo, contenido, estado, fecha_publicacion FROM articles"
+                "SELECT id, titulo, contenido, estado, fecha_publicacion FROM articles"
             )
             articles = await cursor.fetchall()
             return articles
@@ -84,7 +84,7 @@ async def get_articles():
 async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
     try:
         conn = await get_conexion()
-        async with conn.cursor() as cursor:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 "SELECT * FROM articles WHERE id=%s",
                 (id,)
