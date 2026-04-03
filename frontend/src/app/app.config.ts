@@ -5,7 +5,8 @@ import localeEs from '@angular/common/locales/es';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 registerLocaleData(localeEs);
 
@@ -15,6 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(), 
     provideRouter(routes), 
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
   ]
 };

@@ -35,8 +35,8 @@
           <p class="card-excerpt">{{ (article.contenido.length > 100) ? (article.contenido | slice:0:100) + '...' : article.contenido }}</p>
           <button class="read-more-btn" [routerLink]="['/articulo', article.id]">Leer noticia</button>
           
-          <!-- Editor Tools (Simulated display for assigning categories) -->
-          <div class="editor-tools">
+          <!-- Editor Tools (Protected by Auth) -->
+          <div class="editor-tools" *ngIf="authService.isEditor()">
             <span class="editor-label">Editor:</span>
             <select [(ngModel)]="selectedSections[article.id || 0]" class="section-select">
               <option [value]="0">Sin categoría</option>

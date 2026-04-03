@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ArticlesService } from '../../services/articles.service';
-import { Article } from '../../interfaces/article.interface';
-
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ArticlesService } from '../../services/articles.service';
+import { AuthService } from '../../services/auth.service';
+import { Article } from '../../interfaces/article.interface';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   private articlesService = inject(ArticlesService);
+  public authService = inject(AuthService); // Public for HTML access
   
   public articles = signal<Article[]>([]);
   public sections = signal<any[]>([]);
