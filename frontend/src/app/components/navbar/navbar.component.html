@@ -1,0 +1,38 @@
+<nav class="premium-navbar">
+  <div class="nav-container">
+    <!-- Brand / Logo -->
+    <div class="nav-brand" routerLink="/home">
+      <span class="brand-text">El Diario</span>
+      <span class="brand-accent">Manchego</span>
+    </div>
+
+    <!-- Separator -->
+    <div class="nav-separator"></div>
+
+    <!-- Navigation Links -->
+    <ul class="nav-links">
+      <li *ngFor="let section of sections">
+        <!-- We use routerLinkActive to style the current page -->
+        <a [routerLink]="section.path" routerLinkActive="active" class="nav-item">
+          {{ section.label }}
+        </a>
+      </li>
+    </ul>
+
+    <!-- Optional Right side (Search / Profile icon placeholder) -->
+    <div class="nav-actions">
+      <button class="icon-btn" aria-label="Buscar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+      <button class="icon-btn" aria-label="Usuario">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>

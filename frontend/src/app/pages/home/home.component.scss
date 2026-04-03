@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap');
+
+$bg-color: #0b0f19;
+$card-bg: rgba(22, 27, 40, 0.7);
+$primary: #e63946;
+$text-light: #f8f9fa;
+$text-muted: #a0aab2;
+$glass-border: rgba(255, 255, 255, 0.05);
+
+.home-container {
+  min-height: 100vh;
+  background-color: $bg-color;
+  font-family: 'Inter', sans-serif;
+  color: $text-light;
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 45vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba($primary, 0.15) 0%, transparent 60%);
+  border-bottom: 1px solid $glass-border;
+  text-align: center;
+  
+  .hero-content {
+    max-width: 800px;
+    padding: 2rem;
+    animation: fadeInDown 1s ease forwards;
+  }
+
+  .main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+    
+    .highlight {
+      color: $primary;
+    }
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: $text-muted;
+    line-height: 1.6;
+  }
+}
+
+/* Feed Section */
+.feed-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+
+  .section-title-wrapper {
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .divider {
+      height: 4px;
+      width: 60px;
+      background: $primary;
+      border-radius: 2px;
+    }
+  }
+}
+
+/* Grid & Cards */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+}
+
+.article-card {
+  background: $card-bg;
+  border: 1px solid $glass-border;
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba($primary, 0.3);
+  }
+
+  .card-image-wrapper {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: $primary;
+      border: 1px solid rgba($primary, 0.4);
+    }
+  }
+
+  &:hover .card-image {
+    transform: scale(1.05);
+  }
+
+  .card-content {
+    padding: 1.5rem;
+
+    .date {
+      font-size: 0.85rem;
+      color: $text-muted;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .card-excerpt {
+      font-size: 0.95rem;
+      color: $text-muted;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .read-more-btn {
+      width: 100%;
+      background: transparent;
+      color: $text-light;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: $text-light;
+        color: $bg-color;
+      }
+    }
+
+    /* Editor Tools Block */
+    .editor-tools {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      
+      .editor-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: $primary;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      .section-select {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        padding: 0.4rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        outline: none;
+        cursor: pointer;
+        flex: 1; /* take up remaining space */
+        
+        &:focus {
+          border-color: $primary;
+        }
+      }
+      
+      .btn-assign {
+        background: transparent;
+        border: 1px solid $primary;
+        color: $primary;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: $primary;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+/* Animations & Skeletons */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { background-color: rgba(255,255,255,0.05); }
+  50% { background-color: rgba(255,255,255,0.1); }
+  100% { background-color: rgba(255,255,255,0.05); }
+}
+
+.skeleton {
+  .skeleton-image {
+    height: 200px;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+  .skeleton-text {
+    height: 1rem;
+    margin: 1.5rem;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
+    &.title { height: 1.5rem; width: 60%; }
+  }
+}

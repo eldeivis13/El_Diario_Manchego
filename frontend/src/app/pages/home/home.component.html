@@ -1,0 +1,58 @@
+<div class="home-container">
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1 class="main-title">El Diario <span class="highlight">Manchego</span></h1>
+      <p class="subtitle">La actualidad desde La Mancha para el mundo.</p>
+    </div>
+  </header>
+
+  <main class="feed-section">
+    <div class="section-title-wrapper">
+      <h2>Últimas Noticias</h2>
+      <div class="divider"></div>
+    </div>
+
+    <!-- Skeleton Loader (Wow Effect) -->
+    <div *ngIf="isLoading()" class="articles-grid">
+      <div *ngFor="let i of [1,2,3,4,5]" class="article-card skeleton">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-text title"></div>
+        <div class="skeleton-text"></div>
+      </div>
+    </div>
+
+    <!-- Articles Feed -->
+    <div *ngIf="!isLoading()" class="articles-grid">
+      <article *ngFor="let article of articles()" class="article-card">
+        <div class="card-image-wrapper">
+          <!-- Premium Placeholder image -->
+          <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=600&h=400" alt="News Image" class="card-image">
+          <div class="card-badge">{{ article.estado }}</div>
+        </div>
+        <div class="card-content">
+          <p class="date">{{ article.fecha_publicacion | date:'fullDate':'':'es' }}</p>
+          <h3 class="card-title">{{ article.titulo }}</h3>
+          <p class="card-excerpt">{{ (article.contenido.length > 100) ? (article.contenido | slice:0:100) + '...' : article.contenido }}</p>
+          <button class="read-more-btn" [routerLink]="['/articulo', article.id]">Leer noticia</button>
+          
+          <!-- Editor Tools (Simulated display for assigning categories) -->
+          <div class="editor-tools">
+            <span class="editor-label">Editor:</span>
+            <select [(ngModel)]="selectedSections[article.id || 0]" class="section-select">
+              <option [value]="0">Sin categoría</option>
+              <option *ngFor="let section of sections()" [value]="section.id">
+                {{ section.nombre }}
+              </option>
+            </select>
+            <button class="btn-assign" (click)="assignSection(article.id)">Guardar</button>
+          </div>
+        </div>
+      </article>
+      
+      <!-- Empty State -->
+      <div *ngIf="articles().length === 0" class="empty-state">
+        <p>No hay noticias disponibles en estos momentos.</p>
+      </div>
+    </div>
+  </main>
+</div>

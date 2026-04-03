@@ -1,0 +1,311 @@
+@import '../../../styles.scss';
+
+// Variables & Mixins for the Article Page
+$max-content-width: 720px;
+$article-transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+.article-wrapper {
+  min-height: 100vh;
+  background-color: var(--background-color, #0a0a0a);
+  color: var(--text-color, #f4f4f5);
+  font-family: 'Inter', system-ui, sans-serif;
+  padding-bottom: 5rem;
+}
+
+// Navigation
+.article-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1.5rem 2rem;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #a1a1aa);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #fff;
+    }
+    
+    svg {
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover svg {
+      transform: translateX(-4px);
+    }
+  }
+}
+
+// Animation
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Hero Image
+.article-hero {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 0;
+
+  .hero-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    min-height: 400px;
+    max-height: 600px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02); // Prevents subpixel gaps
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.2) 40%, transparent 100%);
+    }
+  }
+}
+
+// Main Content
+.article-body {
+  width: 100%;
+  max-width: $max-content-width;
+  margin: -100px auto 0; // Negative margin to overlap hero image slightly
+  position: relative;
+  z-index: 10;
+  padding: 0 2rem;
+
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+  }
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .badge {
+    background: rgba(220, 53, 69, 0.15); // Match primary red shade of project but subtle
+    color: #ff6b6b;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+  }
+
+  .date {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+}
+
+.article-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  color: #fff;
+  text-wrap: balance;
+}
+
+// Author Box
+.article-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  }
+
+  .author-info {
+    .author-name {
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+      font-size: 1rem;
+    }
+    .author-role {
+      color: #71717a;
+      margin: 0;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+// Reading Text
+.article-text {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #d4d4d8;
+
+  p {
+    margin-bottom: 1.75rem;
+    
+    // Drop cap for the first paragraph for a classic editorial feel
+    &:first-of-type {
+      &::first-letter {
+        float: left;
+        font-size: 4.5rem;
+        font-weight: 800;
+        line-height: 0.8;
+        padding: 0.2rem 0.5rem 0 0;
+        color: #ff6b6b;
+      }
+    }
+  }
+}
+
+// Error state styling
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  
+  .error-content {
+    text-align: center;
+    background: rgba(255, 0, 0, 0.05);
+    padding: 3rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 0, 0, 0.1);
+    
+    svg {
+      color: #ff6b6b;
+      margin-bottom: 1rem;
+    }
+    
+    h2 {
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    
+    p {
+      color: #a1a1aa;
+      margin-bottom: 2rem;
+    }
+    
+    .btn-primary {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      
+      &:hover {
+        background: #fa5252;
+      }
+    }
+  }
+}
+
+// Skeleton loading styles
+.skeleton-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .skeleton-image-hero {
+    width: 100%;
+    height: 50vh;
+    border-radius: 24px;
+    background: linear-gradient(90deg, #1f1f22 25%, #27272a 50%, #1f1f22 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    margin-bottom: 3rem;
+  }
+  
+  .skeleton-header {
+    max-width: $max-content-width;
+    margin: 0 auto 3rem;
+  }
+
+  .skeleton-content {
+    max-width: $max-content-width;
+    margin: 0 auto;
+  }
+
+  .skeleton-line {
+    height: 1rem;
+    background: linear-gradient(90deg, #1f1f22 25%, #27272a 50%, #1f1f22 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    
+    &.title {
+      height: 3rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      
+      &.short { width: 70%; margin-bottom: 2rem; }
+    }
+    
+    &.meta {
+      width: 40%;
+      height: 1.5rem;
+    }
+    
+    &.text {
+      height: 1.125rem;
+      margin-bottom: 1.2rem;
+      &:nth-child(even) { width: 95%; }
+      &:nth-child(odd) { width: 85%; }
+      &:last-child { width: 60%; }
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

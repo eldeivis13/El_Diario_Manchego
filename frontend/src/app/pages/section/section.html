@@ -1,0 +1,57 @@
+<div class="section-container">
+  <!-- Small Hero -->
+  <header class="section-hero">
+    <div class="container">
+      <h1 class="category-title">
+        <span class="highlight">Sección:</span> {{ sectionName() | uppercase }}
+      </h1>
+      <div class="divider"></div>
+      <p class="subtitle">Explora las últimas noticias y reportajes en profundidad.</p>
+    </div>
+  </header>
+
+  <!-- Feed Section -->
+  <section class="feed-section">
+    <ng-container *ngIf="isLoading(); else articlesTpl">
+      <!-- Loading Skeletons -->
+      <div class="articles-grid skeleton">
+        <div class="article-card" *ngFor="let i of [1,2,3,4,5,6]">
+          <div class="card-image-wrapper skeleton-image"></div>
+          <div class="card-content">
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text title"></div>
+            <div class="skeleton-text"></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #articlesTpl>
+      <div class="articles-grid" *ngIf="articles().length > 0; else noArticlesTpl">
+        <article class="article-card" *ngFor="let article of articles()">
+          <div class="card-image-wrapper">
+            <!-- Simulated image -> Unsplash Random Abstract based on article id -->
+            <img class="card-image" [src]="'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800&ixlib=rb-4.0.3&sig=' + article.id" alt="Cover Image">
+            <span class="card-badge">{{ article.estado }}</span>
+          </div>
+          
+          <div class="card-content">
+            <div class="date" *ngIf="article.fecha_publicacion">{{ article.fecha_publicacion | date:'dd MMM, yyyy' }}</div>
+            <h3 class="card-title">{{ article.titulo }}</h3>
+            <p class="card-excerpt">{{ (article.contenido.length > 100) ? (article.contenido | slice:0:100) + '...' : article.contenido }}</p>
+            <button class="read-more-btn" [routerLink]="['/articulo', article.id]">Leer noticia</button>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #noArticlesTpl>
+        <div class="empty-state">
+          <i class="icon-empty">📭</i>
+          <h2>Aún no hay publicaciones en {{ sectionName() | titlecase }}</h2>
+          <p>Los editores están trabajando para traer información pronto.</p>
+          <button class="btn-return" routerLink="/home">Volver al inicio</button>
+        </div>
+      </ng-template>
+    </ng-template>
+  </section>
+</div>
