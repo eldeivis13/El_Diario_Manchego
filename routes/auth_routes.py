@@ -1,13 +1,11 @@
-from fastapi import APIRouter
-from models.user_model import UserCreate, UserLogin
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from models.user_model import UserCreate
 from controllers import auth_controllers 
 
 router = APIRouter()
 
 # registro de usuarios
-
-
-# inserción de un usuario en la base de datos /auth/register
 @router.post('/register', status_code=201)
 async def register(user: UserCreate):
     return await auth_controllers.register(user)
@@ -15,5 +13,5 @@ async def register(user: UserCreate):
 
 # login de usuarios
 @router.post('/login', status_code=200)
-async def login(user_login: UserLogin):
-    return await auth_controllers.login(user_login)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    return await auth_controllers.login(form_data)

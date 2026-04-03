@@ -35,7 +35,7 @@ async def get_current_user(token: str = Depends(oauth2)):
     return user
 
 async def is_redactor(user=Depends(get_current_user)):
-    if user["rol"] == "redactor":
+    if user["rol"].lower() == "redactor":
         return user
 
     raise HTTPException(
@@ -44,7 +44,7 @@ async def is_redactor(user=Depends(get_current_user)):
     )
 
 async def is_editor(user=Depends(get_current_user)):
-    if user["rol"] == "editor":
+    if user["rol"].lower() == "editor":
         return user
 
     raise HTTPException(

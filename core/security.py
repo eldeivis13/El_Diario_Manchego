@@ -28,7 +28,9 @@ def create_token(data: dict):
 
 def decode_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ACCESS_TOKEN])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
-        return None
+    except Exception as e:
+        # Añade un print opcional si deseas depurar errores en terminal
+         print("Error decodificando token: ", e)
+         return None
