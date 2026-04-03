@@ -1,0 +1,37 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('REDACTOR','EDITOR') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    contenido TEXT NOT NULL,
+    estado ENUM('BORRADOR','REVISION','PUBLICADO') DEFAULT 'BORRADOR',
+    importancia INT DEFAULT 0,
+    autor_id INT NOT NULL,
+    editor_id INT NULL,
+    section_id INT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_publicacion TIMESTAMP NULL,
+
+    FOREIGN KEY (autor_id) REFERENCES users(id),
+    FOREIGN KEY (editor_id) REFERENCES users(id),
+    FOREIGN KEY (section_id) REFERENCES sections(id)
+);
+
+CREATE TABLE subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
