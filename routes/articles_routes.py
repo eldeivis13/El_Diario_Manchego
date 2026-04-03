@@ -17,10 +17,10 @@ async def get_articles():
 async def get_articles_in_review(editor=Depends(is_editor)):
     return await articles_controllers.get_articles_in_review()
 
-# GET MY ARTICLE
+# GET MY ARTICLES (Authenticated)
 @router.get("/mine", status_code=200)
-async def get_my_articles(article_id: str, user_id: str):
-    return await articles_controllers.get_my_articles(article_id, user_id)
+async def get_my_articles(user=Depends(get_current_user)):
+    return await articles_controllers.get_my_articles(user)
 
 
 # GET ARTICLES BY SECTION
@@ -43,8 +43,8 @@ async def create_article(article: ArticleCreate, redactor=Depends(is_redactor)):
 
 # ACTUALIZAR ARTICLE
 @router.put("/{article_id}", status_code=200)
-async def update_article(article_id: str, article: ArticleUpdate):
-    return await articles_controllers.update_article (int((article_id)), article)
+async def update_article(article_id: int, article: ArticleUpdate, current_user=Depends(get_current_user)):
+    return await articles_controllers.update_article(article_id, article, current_user)
 
 
 # SEND TO REVIEW

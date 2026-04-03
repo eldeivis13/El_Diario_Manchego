@@ -49,9 +49,9 @@ export class NuevaPublicacionComponent {
       next: () => {
         this.isLoading.set(false);
         this.isSuccess.set(true);
-        // After 2 seconds, redirect to home
+        // After 2 seconds, redirect to our management dashboard
         setTimeout(() => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/dashboard']);
         }, 2000);
       },
       error: (err) => {

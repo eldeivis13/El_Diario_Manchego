@@ -185,10 +185,11 @@ async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
 
 # GET /article/mine -> mis articulos
 
-async def get_my_articles(user_id: int = Depends(get_current_user)):
+async def get_my_articles(user: dict):
+    user_id = user["id"]
     try:
         conn = await get_conexion()
-        async with conn.cursor() as cursor:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 "SELECT id, titulo, contenido, estado FROM articles WHERE autor_id=%s",
                 (user_id,)

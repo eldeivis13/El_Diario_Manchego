@@ -13,15 +13,15 @@
       <p>Cargando artículos...</p>
     </div>
 
-    <!-- REDACTOR VIEW -->
-    <div class="redactor-panel" *ngIf="!isLoading() && authService.isRedactor()">
+    <!-- PERSONAL ARTICLES PANEL (For both Redactors & Editors) -->
+    <div class="personal-panel" *ngIf="!isLoading()">
       <div class="panel-header">
         <h2>Mis Artículos</h2>
         <button class="btn-primary" routerLink="/nueva-publicacion">+ Nueva Noticia</button>
       </div>
 
       <div class="empty-state" *ngIf="myArticles().length === 0">
-        <p>Aún no has escrito ninguna noticia.</p>
+        <p>Aún no tienes artículos registrados.</p>
       </div>
 
       <div class="table-wrapper" *ngIf="myArticles().length > 0">
@@ -36,24 +36,24 @@
           </thead>
           <tbody>
             <tr *ngFor="let art of myArticles()">
-              <td>#{{ art[0] }}</td>
-              <td class="title-cell">{{ art[1] }}</td>
-              <td><span class="status-badge" [attr.data-status]="art[3]">{{ art[3] }}</span></td>
+              <td>#{{ art.id }}</td>
+              <td class="title-cell">{{ art.titulo }}</td>
+              <td><span class="status-badge" [attr.data-status]="art.estado">{{ art.estado }}</span></td>
               <td class="actions-cell">
                 <!-- Solo se puede editar si es BORRADOR -->
-                <button class="btn-action" title="Editar" *ngIf="art[3] === 'BORRADOR'">
+                <button type="button" class="btn-action" title="Editar" *ngIf="art.estado === 'BORRADOR'" [routerLink]="['/editar-publicacion', art.id]">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="btn-action send-btn" title="Enviar a Revisión" *ngIf="art[3] === 'BORRADOR'" (click)="sendToReview(art[0])">
+                <button type="button" class="btn-action send-btn" title="Enviar a Revisión" *ngIf="art.estado === 'BORRADOR'" (click)="sendToReview(art.id)">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                   </svg>
                 </button>
-                <button class="btn-action delete-btn" title="Eliminar" (click)="deleteArticle(art[0])">
+                <button type="button" class="btn-action delete-btn" title="Eliminar" (click)="deleteArticle(art.id)">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -66,7 +66,9 @@
       </div>
     </div>
 
-    <!-- EDITOR VIEW -->
+    <div class="panel-divider" *ngIf="authService.isEditor() && !isLoading()"></div>
+
+    <!-- REVIEW BOX (Editor Only) -->
     <div class="editor-panel" *ngIf="!isLoading() && authService.isEditor()">
       <div class="panel-header">
         <h2>Bandeja de Revisión</h2>
@@ -105,5 +107,28 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- CUSTOM DELETE MODAL (Premium replacement for native confirm) -->
+  <div class="modal-overlay" *ngIf="showDeleteModal()" (click)="closeDeleteModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="warning-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h2>¿Eliminar artículo?</h2>
+      </div>
+      <div class="modal-body">
+        <p>Esta acción no se puede deshacer. El artículo será eliminado permanentemente de la base de datos.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeDeleteModal()">Cancelar</button>
+        <button class="btn-confirm-delete" (click)="confirmDelete()">Eliminar Definitivamente</button>
+      </div>
+    </div>
   </div>
 </div>

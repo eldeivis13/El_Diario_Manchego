@@ -36,6 +36,27 @@ $glass-border: rgba(255, 255, 255, 0.05);
   }
 }
 
+.panel-divider {
+  height: 1px;
+  background: $glass-border;
+  margin: 4rem 0;
+  position: relative;
+
+  &::after {
+    content: 'ADMINISTRACIÓN';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $bg-color;
+    padding: 0 2rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $text-muted;
+    letter-spacing: 0.3em;
+  }
+}
+
 .dashboard-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -304,6 +325,94 @@ $glass-border: rgba(255, 255, 255, 0.05);
 }
 
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* --- CUSTOM MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-card {
+  background: $card-bg;
+  border: 1px solid $glass-border;
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease forwards;
+
+  .modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    .warning-icon {
+      background: rgba($primary, 0.1);
+      color: $primary;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h2 { margin: 0; font-size: 1.8rem; text-align: center; }
+  }
+
+  .modal-body {
+    text-align: center;
+    color: $text-muted;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid $glass-border;
+      &:hover { background: rgba(255, 255, 255, 0.1); }
+    }
+
+    .btn-confirm-delete {
+      background: $primary;
+      color: #fff;
+      border: none;
+      &:hover { transform: scale(1.02); background: lighten($primary, 10%); }
+    }
+  }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 
 @media (max-width: 768px) {
   .dashboard-container { padding: 5rem 1rem 2rem; }

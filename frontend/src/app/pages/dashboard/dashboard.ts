@@ -21,6 +21,10 @@ export class DashboardComponent implements OnInit {
   public sections = signal<any[]>([]);
   public isLoading = signal(false);
 
+  // Custom Deletion Modal State
+  public showDeleteModal = signal(false);
+  public articleToDelete = signal<number | null>(null);
+
   ngOnInit(): void {
     this.loadData();
     this.loadSections();
@@ -28,15 +32,23 @@ export class DashboardComponent implements OnInit {
 
   loadData(): void {
     this.isLoading.set(true);
-    if (this.authService.isRedactor()) {
-      this.articlesService.getMyArticles().subscribe({
-        next: (data) => {
-          this.myArticles.set(data);
+    
+    // Always fetch personal articles for any logged-in user
+    this.articlesService.getMyArticles().subscribe({
+      next: (data) => {
+        this.myArticles.set(data);
+        // If not an editor, we're done loading
+        if (!this.authService.isEditor()) {
           this.isLoading.set(false);
-        },
-        error: () => this.isLoading.set(false)
-      });
-    } else if (this.authService.isEditor()) {
+        }
+      },
+      error: () => {
+        if (!this.authService.isEditor()) this.isLoading.set(false);
+      }
+    });
+
+    // If editor, additionally fetch the review queue
+    if (this.authService.isEditor()) {
       this.articlesService.getArticlesInReview().subscribe({
         next: (data) => {
           this.reviewArticles.set(data);
@@ -59,11 +71,30 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteArticle(articleId: number): void {
-    if (confirm('¿Estás seguro de que quieres eliminar este artículo?')) {
-      this.articlesService.deleteArticle(articleId).subscribe(() => {
-        this.loadData();
+    // Open the custom modal instead of native confirm
+    this.articleToDelete.set(articleId);
+    this.showDeleteModal.set(true);
+  }
+
+  confirmDelete(): void {
+    const id = this.articleToDelete();
+    if (id) {
+      this.articlesService.deleteArticle(id).subscribe({
+        next: () => {
+          this.closeDeleteModal();
+          this.loadData();
+        },
+        error: (err) => {
+          alert('Error al eliminar: ' + (err.error?.detail || err.message));
+          this.closeDeleteModal();
+        }
       });
     }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+    this.articleToDelete.set(null);
   }
 
   // --- Editor Actions ---

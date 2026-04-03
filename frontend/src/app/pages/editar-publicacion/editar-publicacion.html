@@ -1,0 +1,50 @@
+<div class="edit-container">
+  <div class="header-bar">
+    <h1>Editar <span class="highlight">Artículo</span></h1>
+    <a routerLink="/dashboard" class="back-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Volver al Panel
+    </a>
+  </div>
+
+  <div class="form-wrapper">
+    <div class="loading-state" *ngIf="isLoading()">
+      <p>Cargando datos...</p>
+    </div>
+
+    <form class="edit-form" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
+      <div class="input-group">
+        <label for="title">Título del Artículo</label>
+        <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Ej: Nueva era en Castilla-La Mancha" required>
+      </div>
+
+      <div class="input-group">
+        <label for="content">Contenido</label>
+        <textarea id="content" name="content" [(ngModel)]="content" rows="12" placeholder="Escribe el cuerpo de la noticia..." required></textarea>
+      </div>
+
+      <div class="footer-row">
+        <div class="input-group date-group">
+          <label for="date">Fecha de Publicación (Opcional)</label>
+          <input type="text" id="date" name="date" [(ngModel)]="fpublicacion" placeholder="DD/MM/YYYY">
+        </div>
+
+        <div class="action-buttons">
+          <button type="submit" class="btn-save" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="alert alert-success" *ngIf="isSuccess()">
+      ¡Artículo actualizado correctamente! Redirigiendo...
+    </div>
+    <div class="alert alert-danger" *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+  </div>
+</div>
