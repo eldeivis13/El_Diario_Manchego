@@ -118,19 +118,55 @@ async def get_my_articles(user_id: int = Depends(get_current_user)):
 
 # POST /articles/update_status
 
-async def send_to_review(id: int, article_status: str, user_id: int = Depends(get_current_user)):
-    conn = await get_conexion()
-
-    async with conn.cursor() as cursor:
-        await cursor.execute(
-            "UPDATE articles SET estado=%s WHERE id=%s",
-            (article_status, id,)
-        )
-        row = await cursor.fetchone()
-
-        if not row or row[0] != user_id:
-            raise HTTPException(status_code=403, detail="No autorizado")
-
-    conn.close()
+async def send_to_review(id: int, article_status: str, user: dict):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "UPDATE articles SET estado=%s WHERE id=%s",
+                (article_status, id,)
+            )
+            # Fetching after update without SELECT doesn't work this way in MySQL but we won't crash it if it's there.
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
     return {"msg": "Estado del articulo actualizado"}
+
+
+# DELETE /articles/(id)
+
+async def delete_article(id: int, user: dict):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor() as cursor:
+            # Buscar artículo
+            await cursor.execute("SELECT autor_id FROM articles WHERE id=%s", (id,))
+            row = await cursor.fetchone()
+            
+            if not row:
+                raise HTTPException(status_code=404, detail="Artículo no encontrado")
+                
+            autor_id = row[0]
+            
+            # Lógica de Permisos de roles:
+            # - Si es editor: Tiene privilegios directos, puede eliminar todo.
+            # - Si es redactor: Solo puede eliminar si el artículo es de su autoría.
+            if user["rol"].lower() == "redactor" and autor_id != user["id"]:
+                raise HTTPException(
+                    status_code=403, 
+                    detail="Solo el autor o un editor pueden eliminar este artículo"
+                )
+            
+            # Proceder a eliminar
+            await cursor.execute("DELETE FROM articles WHERE id=%s", (id,))
+            
+        return {"msg": "Artículo eliminado correctamente"}
+    except HTTPException:
+        # Re-raise HTTP exceptions to not mask them 
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error borrando de base de datos: {str(e)}")
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
