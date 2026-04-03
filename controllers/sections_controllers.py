@@ -14,4 +14,18 @@ async def get_section(section_name: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
-        conn.close()
+        if 'conn' in locals() and conn:
+            conn.close()
+
+async def get_all_sections():
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aio.DictCursor) as cursor:
+            await cursor.execute("SELECT * FROM sections")
+            sections = await cursor.fetchall()
+            return sections
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()

@@ -18,6 +18,12 @@ async def get_my_articles(article_id: str, user_id: str):
     return await articles_controllers.get_my_articles(article_id, user_id)
 
 
+# GET ARTICLES BY SECTION
+@router.get("/category/{section_name}", status_code=200)
+async def get_articles_by_section(section_name: str):
+    return await articles_controllers.get_articles_by_section(section_name)
+
+
 # GET ARTICLE BY ID
 @router.get("/{article_id}", status_code=200)
 async def get_aticles_by_id(article_id: str):
@@ -40,6 +46,11 @@ async def update_article(article_id: str, article: ArticleUpdate):
 @router.post("/{article_id}/send-to-review", status_code=200)
 async def send_to_review(article_id: str, article: ArticleResponse, redactor=Depends(is_redactor)):
     return await articles_controllers.send_to_review(article_id, redactor, article)
+
+# ASSIGN CATEGORY
+@router.post("/{article_id}/assign-section", status_code=200)
+async def assign_section(article_id: int, section_id: int, current_user=Depends(get_current_user)):
+    return await articles_controllers.assign_section(article_id, section_id, current_user)
 
 # ELIMINAR ARTICLE
 @router.delete("/{article_id}", status_code=200)

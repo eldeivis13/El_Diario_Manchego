@@ -21,7 +21,7 @@ class ArticleUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     editor_id: Optional[int] = None
-    section: Optional[str] = None
+    section_id: Optional[int] = None
     fpublicacion: Optional[str] = None
 
 class UpdateStatus(BaseModel):
@@ -33,8 +33,10 @@ class ArticleResponse(BaseModel):
     title: str
     content: str
     status: str
-    created_at: datetime = Field(default_factory=datetime.now(tz=timezone.utc) + timedelta(hours=2))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc) + timedelta(hours=2))
     fpublicacion: str
+    section_id: Optional[int] = None
+    section_name: Optional[str] = None
 
     class Config:
         orm_mode = True

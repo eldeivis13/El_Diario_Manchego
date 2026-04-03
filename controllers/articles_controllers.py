@@ -54,7 +54,7 @@ async def update_article(id: int, article: ArticleUpdate, user_id: int = Depends
 
             await cursor.execute(
                 "UPDATE articles SET titulo=%s, contenido=%s, section_id=%s, fecha_publicacion=%s WHERE id=%s",
-                (article.title, article.content, article.section, article.fpublicacion, id)
+                (article.title, article.content, article.section_id, article.fpublicacion, id)
             )
     finally:
         if 'conn' in locals() and conn:
@@ -70,7 +70,11 @@ async def get_articles():
         conn = await get_conexion()
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
-                "SELECT id, titulo, contenido, estado, fecha_publicacion FROM articles"
+                """
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, s.nombre as section_name 
+                FROM articles a 
+                LEFT JOIN sections s ON a.section_id = s.id
+                """
             )
             articles = await cursor.fetchall()
             return articles
@@ -79,6 +83,26 @@ async def get_articles():
             conn.close()
 
 
+# GET /articles/category/{nombre}
+
+async def get_articles_by_section(nombre: str):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            await cursor.execute(
+                """
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, s.nombre as section_name 
+                FROM articles a 
+                JOIN sections s ON a.section_id = s.id
+                WHERE LOWER(s.nombre) = LOWER(%s)
+                """, (nombre,)
+            )
+            articles = await cursor.fetchall()
+            return articles
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
+
 # GET /articles/(id) -> obtener un article
 
 async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
@@ -86,7 +110,12 @@ async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
         conn = await get_conexion()
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
-                "SELECT * FROM articles WHERE id=%s",
+                """
+                SELECT a.*, s.nombre as section_name 
+                FROM articles a 
+                LEFT JOIN sections s ON a.section_id = s.id 
+                WHERE a.id=%s
+                """,
                 (id,)
             )
             article = await cursor.fetchone()
@@ -132,6 +161,22 @@ async def send_to_review(id: int, article_status: str, user: dict):
             conn.close()
 
     return {"msg": "Estado del articulo actualizado"}
+
+# POST /articles/assign-section
+
+async def assign_section(id: int, section_id: int, user: dict):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "UPDATE articles SET section_id=%s WHERE id=%s",
+                (section_id, id,)
+            )
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
+
+    return {"msg": "Categoría asignada correctamente"}
 
 
 # DELETE /articles/(id)
