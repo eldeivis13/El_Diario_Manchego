@@ -27,6 +27,9 @@ async def register(user: UserCreate):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
 
 
 # LOGIN
@@ -70,3 +73,6 @@ async def login(form_data):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
