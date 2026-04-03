@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import test_db_routes, auth_routes, articles_routes, sections_routes, users_routes
+from routes import test_db_routes, auth_routes, articles_routes, sections_routes, users_routes, subscribers_routes
 
 app = FastAPI()
 
@@ -27,3 +27,5 @@ app.include_router(articles_routes.router, prefix="/articles", tags=["articles"]
 app.include_router(users_routes.router, prefix="/users", tags=["users"])
 
 app.include_router(sections_routes.router, prefix="/sections", tags=["section"])
+
+app.include_router(subscribers_routes.router, prefix="/subscribers", tags=["subscribers"])

@@ -1,0 +1,38 @@
+<footer class="footer-premium">
+  <div class="footer-container">
+    <div class="footer-info">
+      <div class="brand">
+        <span class="brand-text">El Diario</span>
+        <span class="brand-accent">Manchego</span>
+      </div>
+      <p class="description">Periodismo de rigor para la tierra del Quijote.</p>
+    </div>
+
+    <!-- Newsletter System (Specs requirement) -->
+    <div class="footer-newsletter">
+      <h3>Suscríbete a nuestra edición digital</h3>
+      <p>Entérate de las últimas noticias en tu correo.</p>
+      
+      <form class="newsletter-form" (ngSubmit)="onSubscribe()">
+        <input 
+          type="email" 
+          name="email" 
+          [(ngModel)]="email" 
+          placeholder="tu@email.com" 
+          required
+          [disabled]="isSubmitting()">
+        
+        <button type="submit" [disabled]="isSubmitting()">
+          <span *ngIf="!isSubmitting()">Suscribirme</span>
+          <span *ngIf="isSubmitting()">...</span>
+        </button>
+      </form>
+      
+      <p class="subscription-message" *ngIf="message()">{{ message() }}</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 El Diario Manchego. Todos los derechos reservados.</p>
+  </div>
+</footer>

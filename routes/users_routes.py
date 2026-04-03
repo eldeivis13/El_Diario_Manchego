@@ -6,6 +6,10 @@ from core.dependences import is_editor, is_redactor
 router = APIRouter()
 
 
+@router.get("/editors", status_code=200)
+async def list_editors():
+    return await users_controllers.get_editors()
+
 @router.get("/editor/{user_id}", status_code=200)
 async def get_user_id_editor(user_id: str, user=Depends(is_editor)):
     return await users_controllers.get_user_id(int(user_id))

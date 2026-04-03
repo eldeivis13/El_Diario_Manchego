@@ -54,6 +54,10 @@ export class AuthService {
     );
   }
 
+  register(userData: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/register`, userData);
+  }
+
   logout(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('manchego_token');

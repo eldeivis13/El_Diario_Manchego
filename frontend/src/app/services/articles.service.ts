@@ -33,4 +33,24 @@ export class ArticlesService {
   createArticle(article: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, article);
   }
+
+  updateArticle(id: number, article: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, article);
+  }
+
+  deleteArticle(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getMyArticles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/mine`);
+  }
+
+  getArticlesInReview(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/review`);
+  }
+
+  subscribe(email: string): Observable<any> {
+    return this.http.post('http://127.0.0.1:8000/subscribers/', { email });
+  }
 }

@@ -38,29 +38,82 @@ async def create_article(article: ArticleCreate, user: dict):
 
 # PUT /articles/(id) -> editar articulo
 
-async def update_article(id: int, article: ArticleUpdate, user_id: int = Depends(get_current_user)):
+async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(get_current_user)):
     try:
         conn = await get_conexion()
-        async with conn.cursor() as cursor:
-            # comprobar que es suyo
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            # Obtener el artículo actual
             await cursor.execute(
-                "SELECT autor_id FROM articles WHERE id=%s",
-                (id,)
+                "SELECT autor_id, estado FROM articles WHERE id=%s", (id,)
             )
             row = await cursor.fetchone()
 
-            if not row or row[0] != user_id:
-                raise HTTPException(status_code=403, detail="No autorizado")
+            if not row:
+                raise HTTPException(status_code=404, detail="Artículo no encontrado")
 
-            await cursor.execute(
-                "UPDATE articles SET titulo=%s, contenido=%s, section_id=%s, fecha_publicacion=%s WHERE id=%s",
-                (article.title, article.content, article.section_id, article.fpublicacion, id)
-            )
+            es_autor = row["autor_id"] == user["id"]
+            es_editor = user["rol"].lower() == "editor"
+            estado_actual = row["estado"].upper()
+
+            # Lógica de permisos:
+            # - Redactor: solo si es autor Y el estado es BORRADOR.
+            # - Editor: libre albedrío.
+            if not es_editor:
+                if not es_autor:
+                    raise HTTPException(status_code=403, detail="No eres el autor de este artículo")
+                if estado_actual != "BORRADOR":
+                    raise HTTPException(status_code=403, detail="No puedes editar un artículo en revisión o publicado")
+
+            # Construir la consulta dinámicamente según los campos enviados
+            update_fields = []
+            params = []
+
+            if article.title is not None:
+                update_fields.append("titulo = %s")
+                params.append(article.title)
+            
+            if article.content is not None:
+                update_fields.append("contenido = %s")
+                params.append(article.content)
+
+            if article.section_id is not None:
+                update_fields.append("section_id = %s")
+                params.append(article.section_id)
+
+            if article.fpublicacion is not None:
+                fecha = article.fpublicacion
+                if "/" in fecha:
+                    fecha = datetime.strptime(fecha, "%d/%m/%Y").strftime("%Y-%m-%d %H:%M:%S")
+                update_fields.append("fecha_publicacion = %s")
+                params.append(fecha)
+
+            # Solo el editor puede cambiar el estado e importancia directamente vía update (o el redactor pasando a REVISION)
+            if es_editor:
+                if article.estado is not None:
+                    update_fields.append("estado = %s")
+                    params.append(article.estado.upper())
+                if article.importancia is not None:
+                    update_fields.append("importancia = %s")
+                    params.append(article.importancia)
+            else:
+                # El redactor solo puede cambiar el estado si es para enviarlo a REVISION
+                if article.estado is not None and article.estado.upper() == "REVISION":
+                    update_fields.append("estado = %s")
+                    params.append("REVISION")
+
+            if not update_fields:
+                return {"msg": "No hay cambios que realizar"}
+
+            params.append(id)
+            query = f"UPDATE articles SET {', '.join(update_fields)} WHERE id = %s"
+            
+            await cursor.execute(query, tuple(params))
+
     finally:
         if 'conn' in locals() and conn:
             conn.close()
 
-    return {"msg": "Artículo actualizado"}
+    return {"msg": "Artículo actualizado correctamente"}
 
 
 # GET /articles 
@@ -71,9 +124,11 @@ async def get_articles():
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
+                WHERE a.estado = 'PUBLICADO'
+                ORDER BY a.importancia DESC, a.fecha_publicacion DESC
                 """
             )
             articles = await cursor.fetchall()
@@ -212,6 +267,26 @@ async def delete_article(id: int, user: dict):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error borrando de base de datos: {str(e)}")
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
+
+# GET /articles/review -> obtener articulos en revision
+async def get_articles_in_review():
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            await cursor.execute(
+                """
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, s.nombre as section_name 
+                FROM articles a 
+                LEFT JOIN sections s ON a.section_id = s.id
+                WHERE a.estado = 'REVISION'
+                ORDER BY a.fecha_publicacion DESC
+                """
+            )
+            articles = await cursor.fetchall()
+            return articles
     finally:
         if 'conn' in locals() and conn:
             conn.close()

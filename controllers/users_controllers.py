@@ -16,3 +16,17 @@ async def get_user_id(user_id: int):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
         conn.close()
+
+async def get_editors():
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aio.DictCursor) as cursor:
+            await cursor.execute(
+                "SELECT id, nombre, email FROM users WHERE rol='EDITOR'"
+            )
+            editors = await cursor.fetchall()
+            return editors
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        conn.close()

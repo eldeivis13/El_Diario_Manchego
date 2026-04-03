@@ -1,0 +1,109 @@
+<div class="dashboard-container">
+  <div class="dashboard-header-bar">
+    <h1>Panel de <span class="accent">Control</span></h1>
+    <p *ngIf="authService.isRedactor()">Gestiona tus noticias y envíalas a revisión.</p>
+    <p *ngIf="authService.isEditor()">Revisa los artículos pendientes de publicación.</p>
+  </div>
+
+  <div class="dashboard-content">
+    
+    <!-- LOADING STATE -->
+    <div class="loading-spinner" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Cargando artículos...</p>
+    </div>
+
+    <!-- REDACTOR VIEW -->
+    <div class="redactor-panel" *ngIf="!isLoading() && authService.isRedactor()">
+      <div class="panel-header">
+        <h2>Mis Artículos</h2>
+        <button class="btn-primary" routerLink="/nueva-publicacion">+ Nueva Noticia</button>
+      </div>
+
+      <div class="empty-state" *ngIf="myArticles().length === 0">
+        <p>Aún no has escrito ninguna noticia.</p>
+      </div>
+
+      <div class="table-wrapper" *ngIf="myArticles().length > 0">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let art of myArticles()">
+              <td>#{{ art[0] }}</td>
+              <td class="title-cell">{{ art[1] }}</td>
+              <td><span class="status-badge" [attr.data-status]="art[3]">{{ art[3] }}</span></td>
+              <td class="actions-cell">
+                <!-- Solo se puede editar si es BORRADOR -->
+                <button class="btn-action" title="Editar" *ngIf="art[3] === 'BORRADOR'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="btn-action send-btn" title="Enviar a Revisión" *ngIf="art[3] === 'BORRADOR'" (click)="sendToReview(art[0])">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+                <button class="btn-action delete-btn" title="Eliminar" (click)="deleteArticle(art[0])">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EDITOR VIEW -->
+    <div class="editor-panel" *ngIf="!isLoading() && authService.isEditor()">
+      <div class="panel-header">
+        <h2>Bandeja de Revisión</h2>
+      </div>
+
+      <div class="empty-state" *ngIf="reviewArticles().length === 0">
+        <p>No hay artículos pendientes de revisión. ¡Buen trabajo!</p>
+      </div>
+
+      <div class="review-grid" *ngIf="reviewArticles().length > 0">
+        <div class="review-card" *ngFor="let art of reviewArticles()">
+          <div class="card-header">
+            <h3>{{ art.titulo }}</h3>
+            <span class="status-pill">{{ art.estado }}</span>
+          </div>
+          <div class="card-body">
+            <div class="management-controls">
+              <div class="input-inline">
+                <label>Categoría:</label>
+                <select [(ngModel)]="art.section_id">
+                  <option [value]="undefined">Seleccionar...</option>
+                  <option *ngFor="let sec of sections()" [value]="sec.id">{{ sec.nombre }}</option>
+                </select>
+              </div>
+              <div class="input-inline">
+                <label>Importancia (1-10):</label>
+                <input type="number" [(ngModel)]="art.importancia" min="0" max="10">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-reject" (click)="rejectArticle(art.id)">Devolver a Borrador</button>
+            <button class="btn-approve" (click)="publishArticle(art.id, art.section_id, art.importancia || 0)">Publicar Noticia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

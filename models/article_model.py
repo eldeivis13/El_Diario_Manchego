@@ -23,6 +23,8 @@ class ArticleUpdate(BaseModel):
     editor_id: Optional[int] = None
     section_id: Optional[int] = None
     fpublicacion: Optional[str] = None
+    estado: Optional[str] = None
+    importancia: Optional[int] = None
 
 class UpdateStatus(BaseModel):
     status: Optional[str] = None

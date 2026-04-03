@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from core.dependences import is_redactor, get_current_user
+from core.dependences import is_redactor, get_current_user, is_editor
 from controllers import articles_controllers
 from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse
 
@@ -11,6 +11,11 @@ router = APIRouter()
 async def get_articles():
     return await articles_controllers.get_articles()
 
+
+# GET ARTICLES IN REVIEW (Editor Only)
+@router.get("/review", status_code=200)
+async def get_articles_in_review(editor=Depends(is_editor)):
+    return await articles_controllers.get_articles_in_review()
 
 # GET MY ARTICLE
 @router.get("/mine", status_code=200)

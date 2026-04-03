@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+$bg-color: #0b0f19;
+$card-bg: rgba(22, 27, 40, 0.7);
+$primary: #e63946;
+$text-light: #f8f9fa;
+$text-muted: #a0aab2;
+$glass-border: rgba(255, 255, 255, 0.05);
+
+.footer-premium {
+  background-color: $bg-color;
+  background-image: radial-gradient(circle at top right, rgba($primary, 0.03) 0%, transparent 40%);
+  color: $text-light;
+  padding: 4rem 2rem 2rem;
+  border-top: 1px solid $glass-border;
+  font-family: 'Inter', sans-serif;
+  margin-top: 4rem;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid $glass-border;
+}
+
+.footer-info {
+  flex: 1;
+
+  .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    
+    .brand-accent { color: $primary; }
+  }
+
+  .description {
+    color: $text-muted;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 300px;
+  }
+}
+
+.footer-newsletter {
+  flex: 1.5;
+  text-align: right;
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: $text-muted;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.newsletter-form {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid $glass-border;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+
+    &:focus { outline: none; border-color: $primary; }
+  }
+
+  button {
+    background: $primary;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: lighten($primary, 5%);
+      transform: translateY(-2px);
+    }
+    
+    &:disabled { opacity: 0.5; }
+  }
+}
+
+.subscription-message {
+  font-size: 0.85rem;
+  color: #4cd964;
+  font-weight: 600;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 1.5rem auto 0;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .footer-info .description { max-width: none; }
+  .footer-newsletter { text-align: center; }
+  .newsletter-form { justify-content: center; flex-direction: column; align-items: center; }
+  .newsletter-form input { max-width: none; }
+}
