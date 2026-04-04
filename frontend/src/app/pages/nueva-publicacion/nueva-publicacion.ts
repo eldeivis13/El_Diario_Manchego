@@ -18,6 +18,7 @@ export class NuevaPublicacionComponent {
   public title = '';
   public content = '';
   public fpublicacion = '';
+  public imageUrl = '';
   
   public isLoading = signal(false);
   public isSuccess = signal(false);
@@ -42,7 +43,8 @@ export class NuevaPublicacionComponent {
       title: this.title,
       content: this.content,
       status: 'BORRADOR',
-      fpublicacion: this.fpublicacion
+      fpublicacion: this.fpublicacion,
+      customPhotoUrl: this.imageUrl || null
     };
 
     this.articlesService.createArticle(articleData).subscribe({

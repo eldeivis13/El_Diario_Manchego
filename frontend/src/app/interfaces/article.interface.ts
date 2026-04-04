@@ -7,4 +7,5 @@ export interface Article {
   autor_id?: number;
   section_id?: number | null;
   section_name?: string | null;
+  customPhotoUrl?: string | null;
 }

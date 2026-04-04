@@ -26,8 +26,8 @@ async def create_article(article: ArticleCreate, user: dict):
         conn = await get_conexion()
         async with conn.cursor() as cursor:
             await cursor.execute(
-                "INSERT INTO articles (titulo, contenido, estado, autor_id, fecha_publicacion) VALUES (%s, %s, %s, %s, %s)",
-                (article.title, article.content, status, user_id, fecha_pub)
+                "INSERT INTO articles (titulo, contenido, estado, autor_id, fecha_publicacion, imagen_url) VALUES (%s, %s, %s, %s, %s, %s)",
+                (article.title, article.content, status, user_id, fecha_pub, article.customPhotoUrl)
             )
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al insertar en DB: {str(e)}")
@@ -88,6 +88,10 @@ async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(g
                 update_fields.append("fecha_publicacion = %s")
                 params.append(fecha)
 
+            if article.customPhotoUrl is not None:
+                update_fields.append("imagen_url = %s")
+                params.append(article.customPhotoUrl)
+
             # Solo el editor puede cambiar el estado e importancia directamente vía update (o el redactor pasando a REVISION)
             if es_editor:
                 if article.estado is not None:
@@ -131,7 +135,7 @@ async def get_articles():
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
                 WHERE a.estado = 'PUBLICADO'
@@ -153,7 +157,7 @@ async def get_articles_by_section(nombre: str):
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 JOIN sections s ON a.section_id = s.id
                 WHERE LOWER(s.nombre) = LOWER(%s)
@@ -173,7 +177,7 @@ async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.*, s.nombre as section_name 
+                SELECT a.*, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id 
                 WHERE a.id=%s
@@ -286,7 +290,7 @@ async def get_articles_in_review():
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
                 WHERE a.estado = 'REVISION'

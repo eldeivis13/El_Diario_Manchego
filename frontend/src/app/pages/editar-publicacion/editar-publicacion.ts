@@ -20,6 +20,7 @@ export class EditarPublicacionComponent implements OnInit {
   public title = '';
   public content = '';
   public fpublicacion = '';
+  public imageUrl = '';
   
   public isLoading = signal(true);
   public isSaving = signal(false);
@@ -42,6 +43,7 @@ export class EditarPublicacionComponent implements OnInit {
         this.title = article.titulo;
         this.content = article.contenido;
         this.fpublicacion = article.fecha_publicacion;
+        this.imageUrl = article.customPhotoUrl || '';
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -60,7 +62,8 @@ export class EditarPublicacionComponent implements OnInit {
     const updateData = {
       title: this.title,
       content: this.content,
-      fpublicacion: this.fpublicacion
+      fpublicacion: this.fpublicacion,
+      customPhotoUrl: this.imageUrl || null
     };
 
     this.articlesService.updateArticle(this.articleId, updateData).subscribe({

@@ -4,17 +4,19 @@ from datetime import datetime, timedelta, timezone
 
 # Para crear artículo
 class Article(BaseModel):
-    itle: Optional[str] = None
+    title: Optional[str] = None
     content: Optional[str] = None
     status: Optional[str] = None
     section: Optional[str] = None
     fpublicacion: Optional[str] = None
+    customPhotoUrl: Optional[str] = None
 
 class ArticleCreate(BaseModel):
     title: str = Field(min_length=3, max_length=255)
     content: str = Field(min_length=10)
     status: Optional[str] = "Borrador"
     fpublicacion: str
+    customPhotoUrl: Optional[str] = Field(None, max_length=500)
 
 # Para actualizar artículo
 class ArticleUpdate(BaseModel):
@@ -25,6 +27,7 @@ class ArticleUpdate(BaseModel):
     fpublicacion: Optional[str] = None
     estado: Optional[str] = None
     importancia: Optional[int] = None
+    customPhotoUrl: Optional[str] = None
 
 class UpdateStatus(BaseModel):
     status: Optional[str] = None
@@ -39,6 +42,7 @@ class ArticleResponse(BaseModel):
     fpublicacion: str
     section_id: Optional[int] = None
     section_name: Optional[str] = None
+    customPhotoUrl: Optional[str] = None
 
     class Config:
         orm_mode = True

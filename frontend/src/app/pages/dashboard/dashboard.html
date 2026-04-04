@@ -28,15 +28,15 @@
         <table class="premium-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>#</th>
               <th>Título</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let art of myArticles()">
-              <td>#{{ art.id }}</td>
+            <tr *ngFor="let art of myArticles(); let i = index">
+              <td>{{ i + 1 }}</td>
               <td class="title-cell">{{ art.titulo }}</td>
               <td><span class="status-badge" [attr.data-status]="art.estado">{{ art.estado }}</span></td>
               <td class="actions-cell">

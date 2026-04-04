@@ -37,6 +37,31 @@
           <div class="error-hint" *ngIf="contentInput.touched && contentInput.invalid">El contenido no puede estar vacío.</div>
         </div>
 
+        <!-- Image URL Input -->
+        <div class="input-group">
+          <label for="imageUrl">URL de la Imagen (Opcional)</label>
+          <div class="url-input-container">
+            <input 
+              type="text" 
+              id="imageUrl" 
+              name="imageUrl" 
+              [(ngModel)]="imageUrl" 
+              placeholder="https://images.unsplash.com/photo-...">
+          </div>
+          <p class="hint-text">Pega un enlace directo a una imagen para personalizar la portada de tu noticia.</p>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="image-preview-container" *ngIf="imageUrl">
+          <label>Previsualización de Portada</label>
+          <div class="preview-card">
+            <img [src]="imageUrl" alt="Preview" (error)="imageUrl = ''">
+            <div class="preview-overlay">
+              <span>Vista Previa</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Date + Meta -->
         <div class="form-row">
           <div class="input-group">

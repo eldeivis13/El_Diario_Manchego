@@ -20,10 +20,23 @@
         <label for="title">Título del Artículo</label>
         <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Ej: Nueva era en Castilla-La Mancha" required>
       </div>
+      <div class="input-group">
+        <label for="content">Cuerpo de la Noticia</label>
+        <textarea id="content" name="content" [(ngModel)]="content" rows="12" placeholder="Escribe el cuerpo de la noticia..." required></textarea>
+      </div>
 
       <div class="input-group">
-        <label for="content">Contenido</label>
-        <textarea id="content" name="content" [(ngModel)]="content" rows="12" placeholder="Escribe el cuerpo de la noticia..." required></textarea>
+        <label for="imageUrl">URL de la Imagen (Opcional)</label>
+        <input type="text" id="imageUrl" name="imageUrl" [(ngModel)]="imageUrl" placeholder="HTTPS://...">
+        <p class="hint">Pega un enlace directo a una imagen para personalizar la portada de tu noticia.</p>
+      </div>
+
+      <div class="image-preview" *ngIf="imageUrl">
+        <label>Previsualización de Portada</label>
+        <div class="preview-box">
+          <img [src]="imageUrl" alt="Preview" (error)="imageUrl = ''">
+          <div class="overlay"><span>Vista Previa</span></div>
+        </div>
       </div>
 
       <div class="footer-row">
