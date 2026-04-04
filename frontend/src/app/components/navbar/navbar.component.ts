@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent {
   public authService = inject(AuthService);
+  private router = inject(Router);
 
   public sections = [
     { label: 'Sociedad', path: '/sociedad' },
@@ -23,5 +24,6 @@ export class NavbarComponent {
 
   logout() {
     this.authService.logout();
+    this.router.navigate(['/home']);
   }
 }
