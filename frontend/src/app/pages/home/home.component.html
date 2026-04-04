@@ -29,7 +29,7 @@
           <img [src]="article.customPhotoUrl || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=600&h=400'" 
                [attr.data-debug-url]="article.customPhotoUrl"
                alt="News Image" class="card-image">
-          <div class="card-badge">{{ article.estado }}</div>
+          <div class="card-badge" *ngIf="authService.canCreate()">{{ article.estado }}</div>
         </div>
         <div class="card-content">
           <p class="date">{{ article.fecha_publicacion | date:'fullDate':'':'es' }}</p>

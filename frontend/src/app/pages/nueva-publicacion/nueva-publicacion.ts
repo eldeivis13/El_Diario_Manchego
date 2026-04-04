@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ArticlesService } from '../../services/articles.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-nueva-publicacion',
@@ -11,9 +12,10 @@ import { ArticlesService } from '../../services/articles.service';
   templateUrl: './nueva-publicacion.html',
   styleUrl: './nueva-publicacion.scss'
 })
-export class NuevaPublicacionComponent {
+export class NuevaPublicacionComponent implements OnInit {
   private articlesService = inject(ArticlesService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   public title = '';
   public content = '';
@@ -28,6 +30,12 @@ export class NuevaPublicacionComponent {
     // We optionally initialize with today's date
     const today = new Date();
     this.fpublicacion = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+  }
+
+  ngOnInit(): void {
+    if (!this.authService.isRedactor()) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   onSubmit(): void {

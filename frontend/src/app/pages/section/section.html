@@ -34,7 +34,7 @@
             <img class="card-image" [src]="article.customPhotoUrl || ('https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800&ixlib=rb-4.0.3&sig=' + article.id)" 
                  [attr.data-debug-url]="article.customPhotoUrl"
                  alt="Cover Image">
-            <span class="card-badge">{{ article.estado }}</span>
+            <span class="card-badge" *ngIf="authService.canCreate()">{{ article.estado }}</span>
           </div>
           
           <div class="card-content">

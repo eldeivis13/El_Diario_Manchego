@@ -3,6 +3,7 @@ import { CommonModule, SlicePipe } from '@angular/common';
 import { ArticlesService } from '../../services/articles.service';
 import { Article } from '../../interfaces/article.interface';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-section',
@@ -14,6 +15,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 export class Section implements OnInit {
   private articlesService = inject(ArticlesService);
   private route = inject(ActivatedRoute);
+  public authService = inject(AuthService);
 
   public sectionName = signal<string>('');
   public articles = signal<Article[]>([]);

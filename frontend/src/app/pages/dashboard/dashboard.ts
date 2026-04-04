@@ -135,11 +135,10 @@ export class DashboardComponent implements OnInit {
   }
 
   // --- Editor Actions ---
-  publishArticle(articleId: number, sectionId: number, importancia: number): void {
+  publishArticle(articleId: number, sectionId: number): void {
     const updateData = {
       estado: 'PUBLICADO',
-      section_id: sectionId,
-      importancia: importancia
+      section_id: sectionId
     };
     this.articlesService.updateArticle(articleId, updateData).subscribe(() => {
       this.loadData();

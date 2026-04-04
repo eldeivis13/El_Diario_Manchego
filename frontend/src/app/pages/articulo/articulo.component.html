@@ -52,7 +52,7 @@
     <!-- Content Area -->
     <div class="article-body">
       <div class="article-meta">
-        <span class="badge">{{ data.estado }}</span>
+        <span class="badge" *ngIf="authService.canCreate()">{{ data.estado }}</span>
         <span class="date">{{ data.fecha_publicacion | date:'fullDate':'':'es' }}</span>
       </div>
 
