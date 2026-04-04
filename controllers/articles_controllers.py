@@ -259,22 +259,29 @@ async def delete_article(id: int, user: dict):
         conn = await get_conexion()
         async with conn.cursor() as cursor:
             # Buscar artículo
-            await cursor.execute("SELECT autor_id FROM articles WHERE id=%s", (id,))
+            await cursor.execute("SELECT autor_id, estado FROM articles WHERE id=%s", (id,))
             row = await cursor.fetchone()
             
             if not row:
                 raise HTTPException(status_code=404, detail="Artículo no encontrado")
                 
             autor_id = row[0]
+            estado = row[1]
             
             # Lógica de Permisos de roles:
             # - Si es editor: Tiene privilegios directos, puede eliminar todo.
-            # - Si es redactor: Solo puede eliminar si el artículo es de su autoría.
-            if user["rol"].lower() == "redactor" and autor_id != user["id"]:
-                raise HTTPException(
-                    status_code=403, 
-                    detail="Solo el autor o un editor pueden eliminar este artículo"
-                )
+            # - Si es redactor: Solo puede eliminar si el artículo es de su autoría y si está en BORRADOR.
+            if user["rol"].lower() == "redactor":
+                if autor_id != user["id"]:
+                    raise HTTPException(
+                        status_code=403, 
+                        detail="Solo el autor o un editor pueden eliminar este artículo"
+                    )
+                if estado.upper() != "BORRADOR":
+                    raise HTTPException(
+                        status_code=403, 
+                        detail="Un artículo en revisión o publicado solo puede ser eliminado por un editor"
+                    )
             
             # Proceder a eliminar
             await cursor.execute("DELETE FROM articles WHERE id=%s", (id,))
