@@ -18,12 +18,17 @@ export class DashboardComponent implements OnInit {
 
   public myArticles = signal<any[]>([]);
   public reviewArticles = signal<any[]>([]);
+  public subscribers = signal<any[]>([]);
   public sections = signal<any[]>([]);
   public isLoading = signal(false);
 
   // Custom Deletion Modal State
   public showDeleteModal = signal(false);
   public articleToDelete = signal<number | null>(null);
+
+  // Custom Subscriber Deletion Modal State
+  public showSubDeleteModal = signal(false);
+  public subToDelete = signal<number | null>(null);
 
   ngOnInit(): void {
     this.loadData();
@@ -47,7 +52,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // If editor, additionally fetch the review queue
+    // If editor, additionally fetch the review queue and subscribers
     if (this.authService.isEditor()) {
       this.articlesService.getArticlesInReview().subscribe({
         next: (data) => {
@@ -55,6 +60,11 @@ export class DashboardComponent implements OnInit {
           this.isLoading.set(false);
         },
         error: () => this.isLoading.set(false)
+      });
+
+      this.articlesService.getSubscribers().subscribe({
+        next: (data) => this.subscribers.set(data),
+        error: (err) => console.error('Error fetching subscribers', err)
       });
     }
   }
@@ -113,5 +123,39 @@ export class DashboardComponent implements OnInit {
     this.articlesService.updateArticle(articleId, { estado: 'BORRADOR' }).subscribe(() => {
       this.loadData();
     });
+  }
+
+  // --- Newsletter Actions ---
+  triggerNewsletter(articleId: number): void {
+    if (confirm('¿Quieres notificar esta noticia a todos los suscriptores?')) {
+      this.articlesService.sendNewsletter(articleId).subscribe({
+        next: (res) => alert(res.msg),
+        error: (err) => alert('Error enviando newsletter: ' + err.message)
+      });
+    }
+  }
+
+  removeSubscriber(id: number): void {
+    // Open custom modal instead of native confirm
+    this.subToDelete.set(id);
+    this.showSubDeleteModal.set(true);
+  }
+
+  confirmSubDelete(): void {
+    const id = this.subToDelete();
+    if (id) {
+      this.articlesService.deleteSubscriber(id).subscribe({
+        next: () => {
+          this.closeSubDeleteModal();
+          this.loadData();
+        },
+        error: (err) => alert('Error al eliminar suscriptor: ' + err.message)
+      });
+    }
+  }
+
+  closeSubDeleteModal(): void {
+    this.showSubDeleteModal.set(false);
+    this.subToDelete.set(null);
   }
 }

@@ -53,4 +53,17 @@ export class ArticlesService {
   subscribe(email: string): Observable<any> {
     return this.http.post('http://127.0.0.1:8000/subscribers/', { email });
   }
+
+  // --- Newsletter (Editor Only) ---
+  getSubscribers(): Observable<any[]> {
+    return this.http.get<any[]>('http://127.0.0.1:8000/subscribers/');
+  }
+
+  sendNewsletter(articleId: number): Observable<any> {
+    return this.http.post('http://127.0.0.1:8000/subscribers/send-news', { article_id: articleId });
+  }
+
+  deleteSubscriber(id: number): Observable<any> {
+    return this.http.delete(`http://127.0.0.1:8000/subscribers/${id}`);
+  }
 }

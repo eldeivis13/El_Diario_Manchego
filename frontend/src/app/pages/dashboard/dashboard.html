@@ -59,10 +59,51 @@
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
                 </button>
+                <!-- Editor Only: Notification trigger -->
+                <button type="button" class="btn-action notify-btn" title="Notificar por Newsletter" *ngIf="authService.isEditor()" (click)="triggerNewsletter(art.id)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <div class="panel-divider" *ngIf="authService.isEditor() && !isLoading()"></div>
+
+    <!-- NEWSLETTER MANAGEMENT (Editor Only) -->
+    <div class="newsletter-panel" *ngIf="!isLoading() && authService.isEditor()">
+      <div class="panel-header">
+        <h2>Gestión de Newsletter</h2>
+        <span class="subscriber-count">{{ subscribers().length }} Suscriptores Activos</span>
+      </div>
+
+      <div class="subscribers-box">
+        <div class="subscriber-item" *ngFor="let s of subscribers()">
+          <div class="sub-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span class="sub-email">{{ s.email }}</span>
+          <span class="sub-date">{{ s.fecha_alta | date:'shortDate' }}</span>
+          
+          <button type="button" class="btn-sub-delete" (click)="removeSubscriber(s.id)" title="Eliminar suscriptor">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="empty-state mini" *ngIf="subscribers().length === 0">
+          <p>No hay suscriptores registrados.</p>
+        </div>
       </div>
     </div>
 
@@ -128,6 +169,30 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeDeleteModal()">Cancelar</button>
         <button class="btn-confirm-delete" (click)="confirmDelete()">Eliminar Definitivamente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM SUBSCRIBER DELETE MODAL -->
+  <div class="modal-overlay" *ngIf="showSubDeleteModal()" (click)="closeSubDeleteModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="warning-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="18" y1="8" x2="23" y2="13"></line>
+            <line x1="23" y1="8" x2="18" y2="13"></line>
+          </svg>
+        </div>
+        <h2>¿Eliminar suscriptor?</h2>
+      </div>
+      <div class="modal-body">
+        <p>Este usuario dejará de recibir notificaciones de noticias automáticamente. ¿Deseas continuar?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeSubDeleteModal()">Cancelar</button>
+        <button class="btn-confirm-delete" (click)="confirmSubDelete()">Darse de Baja</button>
       </div>
     </div>
   </div>

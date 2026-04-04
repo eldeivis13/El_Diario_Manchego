@@ -4,6 +4,7 @@ from db.config import get_conexion
 from core.dependences import get_current_user
 from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse
 import aiomysql
+from controllers.subscribers_controllers import send_news_notification
 
 router = APIRouter()
 
@@ -108,6 +109,12 @@ async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(g
             query = f"UPDATE articles SET {', '.join(update_fields)} WHERE id = %s"
             
             await cursor.execute(query, tuple(params))
+
+            # --- AUTOMATIC NEWSLETTER TRIGGER ---
+            if es_editor and article.estado and article.estado.upper() == "PUBLICADO":
+                # Lo lanzamos sin esperar al resultado completo para no bloquear la respuesta
+                import asyncio
+                asyncio.create_task(send_news_notification(id))
 
     finally:
         if 'conn' in locals() and conn:
