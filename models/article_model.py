@@ -28,6 +28,7 @@ class ArticleUpdate(BaseModel):
     estado: Optional[str] = None
     importancia: Optional[int] = None
     customPhotoUrl: Optional[str] = None
+    editor_id: Optional[int] = None
 
 class UpdateStatus(BaseModel):
     status: Optional[str] = None
@@ -42,6 +43,8 @@ class ArticleResponse(BaseModel):
     fpublicacion: str
     section_id: Optional[int] = None
     section_name: Optional[str] = None
+    editor_id: Optional[int] = None
+    editor_name: Optional[str] = None
     customPhotoUrl: Optional[str] = None
 
     class Config:

@@ -45,7 +45,7 @@ async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(g
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             # Obtener el artículo actual
             await cursor.execute(
-                "SELECT autor_id, estado FROM articles WHERE id=%s", (id,)
+                "SELECT autor_id, estado, editor_id FROM articles WHERE id=%s", (id,)
             )
             row = await cursor.fetchone()
 
@@ -56,10 +56,13 @@ async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(g
             es_editor = user["rol"].lower() == "editor"
             estado_actual = row["estado"].upper()
 
-            # Lógica de permisos:
-            # - Redactor: solo si es autor Y el estado es BORRADOR.
-            # - Editor: libre albedrío.
-            if not es_editor:
+            # Lógica de permisos restringida (Assignment-based):
+            if es_editor:
+                # Si el artículo ya tiene un editor asignado, solo ese editor puede meter mano.
+                if row["editor_id"] is not None and row["editor_id"] != user["id"]:
+                    raise HTTPException(status_code=403, detail="Este artículo está asignado a otro editor")
+            else:
+                # Redactor: solo si es autor Y el estado es BORRADOR.
                 if not es_autor:
                     raise HTTPException(status_code=403, detail="No eres el autor de este artículo")
                 if estado_actual != "BORRADOR":
@@ -91,6 +94,10 @@ async def update_article(id: int, article: ArticleUpdate, user: dict = Depends(g
             if article.customPhotoUrl is not None:
                 update_fields.append("imagen_url = %s")
                 params.append(article.customPhotoUrl)
+
+            if article.editor_id is not None:
+                update_fields.append("editor_id = %s")
+                params.append(article.editor_id)
 
             # Solo el editor puede cambiar el estado e importancia directamente vía update (o el redactor pasando a REVISION)
             if es_editor:
@@ -214,20 +221,19 @@ async def get_my_articles(user: dict):
 
 # POST /articles/update_status
 
-async def send_to_review(id: int, article_status: str, user: dict):
+async def send_to_review(id: int, article_status: str, editor_id: int, user: dict):
     try:
         conn = await get_conexion()
         async with conn.cursor() as cursor:
             await cursor.execute(
-                "UPDATE articles SET estado=%s WHERE id=%s",
-                (article_status, id,)
+                "UPDATE articles SET estado=%s, editor_id=%s WHERE id=%s",
+                (article_status, editor_id, id,)
             )
-            # Fetching after update without SELECT doesn't work this way in MySQL but we won't crash it if it's there.
     finally:
         if 'conn' in locals() and conn:
             conn.close()
 
-    return {"msg": "Estado del articulo actualizado"}
+    return {"msg": "Artículo enviado a revisión con éxito"}
 
 # POST /articles/assign-section
 
@@ -283,8 +289,8 @@ async def delete_article(id: int, user: dict):
         if 'conn' in locals() and conn:
             conn.close()
 
-# GET /articles/review -> obtener articulos en revision
-async def get_articles_in_review():
+# GET /articles/review -> obtener articulos en revision (SOLO LOS ASIGNADOS AL EDITOR ACTUAL)
+async def get_articles_in_review(user: dict = Depends(get_current_user)):
     try:
         conn = await get_conexion()
         async with conn.cursor(aiomysql.DictCursor) as cursor:
@@ -293,9 +299,9 @@ async def get_articles_in_review():
                 SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
-                WHERE a.estado = 'REVISION'
+                WHERE a.estado = 'REVISION' AND a.editor_id = %s
                 ORDER BY a.fecha_publicacion DESC
-                """
+                """, (user["id"],)
             )
             articles = await cursor.fetchall()
             return articles

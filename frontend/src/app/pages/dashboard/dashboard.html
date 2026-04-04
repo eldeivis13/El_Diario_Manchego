@@ -141,8 +141,16 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn-reject" (click)="rejectArticle(art.id)">Devolver a Borrador</button>
-            <button class="btn-approve" (click)="publishArticle(art.id, art.section_id, art.importancia || 0)">Publicar Noticia</button>
+            <!-- New Edit button for editors -->
+            <button class="btn-edit-review" [routerLink]="['/editar-publicacion', art.id]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Editar
+            </button>
+            <button class="btn-reject" (click)="rejectArticle(art.id)">Rechazar</button>
+            <button class="btn-approve" (click)="publishArticle(art.id, art.section_id, art.importancia || 0)">Publicar</button>
           </div>
         </div>
       </div>
@@ -193,6 +201,37 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeSubDeleteModal()">Cancelar</button>
         <button class="btn-confirm-delete" (click)="confirmSubDelete()">Darse de Baja</button>
+      </div>
+    </div>
+  </div>
+  <!-- ASSIGN EDITOR MODAL -->
+  <div class="modal-overlay" *ngIf="showAssignModal()" (click)="closeAssignModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="assignment-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <h2>Solicitar Revisión</h2>
+      </div>
+      <div class="modal-body">
+        <p>Selecciona un editor para que revise y autorice la publicación de tu noticia.</p>
+        
+        <div class="assignment-form">
+          <label for="editorSelect">Editor Responsable:</label>
+          <select id="editorSelect" [(ngModel)]="selectedEditorId" class="premium-select">
+            <option [value]="0" disabled>-- Selecciona un editor --</option>
+            <option *ngFor="let ed of editors()" [value]="ed.id">{{ ed.nombre }} ({{ ed.email }})</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeAssignModal()">Cancelar</button>
+        <button class="btn-confirm-assign" [disabled]="selectedEditorId === 0" (click)="confirmAssign()">
+          Enviar a Revisión
+        </button>
       </div>
     </div>
   </div>

@@ -15,7 +15,7 @@ async def get_articles():
 # GET ARTICLES IN REVIEW (Editor Only)
 @router.get("/review", status_code=200)
 async def get_articles_in_review(editor=Depends(is_editor)):
-    return await articles_controllers.get_articles_in_review()
+    return await articles_controllers.get_articles_in_review(editor)
 
 # GET MY ARTICLES (Authenticated)
 @router.get("/mine", status_code=200)
@@ -47,10 +47,10 @@ async def update_article(article_id: int, article: ArticleUpdate, current_user=D
     return await articles_controllers.update_article(article_id, article, current_user)
 
 
-# SEND TO REVIEW
+# SEND TO REVIEW (Redactor chooses editor)
 @router.post("/{article_id}/send-to-review", status_code=200)
-async def send_to_review(article_id: str, article: ArticleResponse, redactor=Depends(is_redactor)):
-    return await articles_controllers.send_to_review(article_id, redactor, article)
+async def send_to_review(article_id: int, editor_id: int, redactor=Depends(is_redactor)):
+    return await articles_controllers.send_to_review(article_id, "REVISION", editor_id, redactor)
 
 # ASSIGN CATEGORY
 @router.post("/{article_id}/assign-section", status_code=200)

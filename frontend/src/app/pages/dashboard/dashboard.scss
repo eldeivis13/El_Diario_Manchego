@@ -467,7 +467,59 @@ $glass-border: rgba(255, 255, 255, 0.05);
       border: none;
       &:hover { transform: scale(1.02); background: lighten($primary, 10%); }
     }
+
+    .btn-confirm-assign {
+      background: #007aff;
+      color: #fff;
+      border: none;
+      &:hover { transform: scale(1.02); background: lighten(#007aff, 10%); }
+      &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    }
   }
+
+  .assignment-icon {
+    background: rgba(#007aff, 0.1);
+    color: #007aff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .assignment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: left;
+    margin-top: 1.5rem;
+
+    label { font-size: 0.9rem; font-weight: 600; color: $text-light; }
+
+    .premium-select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid $glass-border;
+      padding: 1rem;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      &:focus { border-color: #007aff; outline: none; }
+    }
+  }
+}
+
+.btn-edit-review {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $glass-border;
+  color: #fff;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  &:hover { background: rgba(255, 255, 255, 0.1); }
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   public reviewArticles = signal<any[]>([]);
   public subscribers = signal<any[]>([]);
   public sections = signal<any[]>([]);
+  public editors = signal<any[]>([]);
   public isLoading = signal(false);
 
   // Custom Deletion Modal State
@@ -30,9 +31,15 @@ export class DashboardComponent implements OnInit {
   public showSubDeleteModal = signal(false);
   public subToDelete = signal<number | null>(null);
 
+  // Assignment Modal
+  public showAssignModal = signal(false);
+  public articleToAssign = signal<number | null>(null);
+  public selectedEditorId = 0;
+
   ngOnInit(): void {
     this.loadData();
     this.loadSections();
+    this.loadEditors();
   }
 
   loadData(): void {
@@ -73,11 +80,31 @@ export class DashboardComponent implements OnInit {
     this.articlesService.getSections().subscribe(data => this.sections.set(data));
   }
 
+  loadEditors(): void {
+    this.articlesService.getEditors().subscribe(data => this.editors.set(data));
+  }
+
   // --- Redactor Actions ---
   sendToReview(articleId: number): void {
-    this.articlesService.updateArticle(articleId, { estado: 'REVISION' }).subscribe(() => {
-      this.loadData();
-    });
+    // Instead of immediate action, open assignment modal
+    this.articleToAssign.set(articleId);
+    this.selectedEditorId = 0; // Reset
+    this.showAssignModal.set(true);
+  }
+
+  confirmAssign(): void {
+    const id = this.articleToAssign();
+    if (id && this.selectedEditorId !== 0) {
+      this.articlesService.sendToReview(id, this.selectedEditorId).subscribe(() => {
+        this.closeAssignModal();
+        this.loadData();
+      });
+    }
+  }
+
+  closeAssignModal(): void {
+    this.showAssignModal.set(false);
+    this.articleToAssign.set(null);
   }
 
   deleteArticle(articleId: number): void {
