@@ -59,7 +59,29 @@ $glass-border: rgba(255, 255, 255, 0.05);
   padding: 4rem 2rem;
 
   .section-title-wrapper {
-    margin-bottom: 3rem;
+    .header-split {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      
+      .layout-controls {
+        display: flex;
+        gap: 0.5rem;
+        
+        button {
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          border: none;
+          
+          &.btn-primary { background: $primary; color: #fff; }
+          &.btn-approve { background: #198754; color: #fff; }
+          &.btn-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+        }
+      }
+    }
 
     h2 {
       font-size: 2rem;
@@ -81,9 +103,47 @@ $glass-border: rgba(255, 255, 255, 0.05);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2.5rem;
+  grid-auto-flow: dense;
+  
+  &.edit-mode {
+    border: 2px dashed rgba($primary, 0.3);
+    padding: 1rem;
+    border-radius: 16px;
+    background: rgba($primary, 0.02);
+  }
+}
+
+/* Custom Spanning Sizes */
+@media (min-width: 768px) {
+  .article-card.hero {
+    grid-column: span 2;
+    grid-row: span 2;
+    .card-image-wrapper { height: 50%; min-height: 350px; }
+    .card-title { font-size: 2rem; margin-bottom: 1.5rem; }
+    .card-excerpt { font-size: 1.1rem; }
+  }
+  .article-card.wide {
+    grid-column: span 2;
+    grid-row: span 1;
+    flex-direction: row;
+    .card-image-wrapper { width: 45%; height: auto; min-height: 100%; }
+    .card-content { width: 55%; }
+  }
+  .article-card.tall {
+    grid-column: span 1;
+    grid-row: span 2;
+    .card-image-wrapper { height: 50%; min-height: 300px; }
+  }
+  .article-card.normal {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
 }
 
 .article-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: $card-bg;
   border: 1px solid $glass-border;
   border-radius: 16px;
@@ -131,6 +191,9 @@ $glass-border: rgba(255, 255, 255, 0.05);
   }
 
   .card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     padding: 1.5rem;
 
     .date {
@@ -147,6 +210,7 @@ $glass-border: rgba(255, 255, 255, 0.05);
     }
 
     .card-excerpt {
+      flex: 1;
       font-size: 0.95rem;
       color: $text-muted;
       line-height: 1.6;
@@ -154,6 +218,7 @@ $glass-border: rgba(255, 255, 255, 0.05);
     }
 
     .read-more-btn {
+      margin-top: auto;
       width: 100%;
       background: transparent;
       color: $text-light;
@@ -172,7 +237,7 @@ $glass-border: rgba(255, 255, 255, 0.05);
 
     /* Editor Tools Block */
     .editor-tools {
-      margin-top: 1rem;
+      margin-top: auto;
       padding-top: 1rem;
       border-top: 1px dashed rgba(255, 255, 255, 0.1);
       display: flex;
@@ -220,7 +285,64 @@ $glass-border: rgba(255, 255, 255, 0.05);
         }
       }
     }
+    
+    /* Layout Builder Tools */
+    .layout-tools {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      
+      .btn-size {
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        
+        &.active, &:hover {
+          background: rgba($primary, 0.2);
+          border-color: $primary;
+          color: $primary;
+        }
+      }
+      
+      .drag-handle {
+        margin-left: auto;
+        background: rgba($primary, 0.8);
+        color: #fff;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: grab;
+        font-weight: bold;
+        
+        &:active { cursor: grabbing; }
+      }
+    }
   }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 2px $primary;
+  background: $card-bg;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+  border: 4px dashed $primary;
+  background: rgba($primary, 0.1);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* Animations & Skeletons */

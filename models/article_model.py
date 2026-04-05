@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List
 from datetime import datetime, timedelta, timezone
 
 # Para crear artículo
@@ -33,6 +34,14 @@ class ArticleUpdate(BaseModel):
 class UpdateStatus(BaseModel):
     status: Optional[str] = None
 
+class LayoutItem(BaseModel):
+    id: int
+    portada_order: int
+    portada_size: str
+
+class LayoutUpdateBatch(BaseModel):
+    items: List[LayoutItem]
+
 # Para devolver datos (response)
 class ArticleResponse(BaseModel):
     id: int
@@ -46,6 +55,8 @@ class ArticleResponse(BaseModel):
     editor_id: Optional[int] = None
     editor_name: Optional[str] = None
     customPhotoUrl: Optional[str] = None
+    portada_order: Optional[int] = 0
+    portada_size: Optional[str] = "normal"
 
     class Config:
         orm_mode = True

@@ -8,4 +8,6 @@ export interface Article {
   section_id?: number | null;
   section_name?: string | null;
   customPhotoUrl?: string | null;
+  portada_size?: string;
+  portada_order?: number;
 }

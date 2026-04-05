@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from db.config import get_conexion
 from core.dependences import get_current_user
-from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse
+from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse, LayoutUpdateBatch
 import aiomysql
 from controllers.subscribers_controllers import send_news_notification
 
@@ -142,11 +142,11 @@ async def get_articles():
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.importancia, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.portada_order, a.portada_size, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
                 WHERE a.estado = 'PUBLICADO'
-                ORDER BY a.importancia DESC, a.fecha_publicacion DESC
+                ORDER BY a.portada_order ASC, a.fecha_publicacion DESC
                 """
             )
             articles = await cursor.fetchall()
@@ -315,3 +315,18 @@ async def get_articles_in_review(user: dict = Depends(get_current_user)):
     finally:
         if 'conn' in locals() and conn:
             conn.close()
+
+async def update_home_layout(layout_batch: LayoutUpdateBatch):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor() as cursor:
+            for item in layout_batch.items:
+                await cursor.execute(
+                    "UPDATE articles SET portada_order=%s, portada_size=%s WHERE id=%s",
+                    (item.portada_order, item.portada_size, item.id)
+                )
+            await conn.commit()
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
+    return {"msg": "Distribución actualizada correctamente"}

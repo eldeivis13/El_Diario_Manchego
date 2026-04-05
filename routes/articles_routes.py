@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from core.dependences import is_redactor, get_current_user, is_editor
 from controllers import articles_controllers
-from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse
+from models.article_model import ArticleCreate, ArticleUpdate, ArticleResponse, LayoutUpdateBatch
 
 router = APIRouter()
 
@@ -61,3 +61,8 @@ async def assign_section(article_id: int, section_id: int, current_user=Depends(
 @router.delete("/{article_id}", status_code=200)
 async def delete_article(article_id: str, current_user=Depends(get_current_user)):
     return await articles_controllers.delete_article(int(article_id), current_user)
+
+# ACTUALIZAR LAYOUT HOME (Editor Only)
+@router.post("/update-layout", status_code=200)
+async def update_home_layout(layout_batch: LayoutUpdateBatch, editor=Depends(is_editor)):
+    return await articles_controllers.update_home_layout(layout_batch)

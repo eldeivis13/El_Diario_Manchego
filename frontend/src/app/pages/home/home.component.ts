@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { ArticlesService } from '../../services/articles.service';
 import { AuthService } from '../../services/auth.service';
 import { Article } from '../../interfaces/article.interface';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, DragDropModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -20,6 +21,7 @@ export class HomeComponent implements OnInit {
   public articles = signal<Article[]>([]);
   public sections = signal<any[]>([]);
   public isLoading = signal(true);
+  public editLayoutMode = signal(false);
   
   // Temporary state dict to hold selected section id per article in the UI list
   public selectedSections: { [articleId: number]: number } = {};
@@ -67,6 +69,50 @@ export class HomeComponent implements OnInit {
         ));
       },
       error: (err) => alert('Error al asignar categoría: ' + err.message)
+    });
+  }
+
+  // --- Layout Editing ---
+  toggleEditLayout() {
+    this.editLayoutMode.set(!this.editLayoutMode());
+  }
+
+  drop(event: CdkDragDrop<Article[]>) {
+    const list = this.articles();
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+    this.articles.set([...list]);
+  }
+
+  setSize(articleId: number | undefined, size: string) {
+    if (!articleId) return;
+    const list = this.articles().map(a => a.id === articleId ? {...a, portada_size: size} : a);
+    this.articles.set(list);
+  }
+
+  getExcerptLimit(size?: string): number {
+    switch(size) {
+      case 'hero': return 350;
+      case 'wide': return 220;
+      case 'tall': return 300;
+      default: return 120;
+    }
+  }
+
+  saveLayout() {
+    const batch = {
+      items: this.articles().map((a, index) => ({
+        id: a.id,
+        portada_order: index,
+        portada_size: a.portada_size || 'normal'
+      }))
+    };
+    
+    this.articlesService.updateHomeLayout(batch).subscribe({
+      next: () => {
+        this.toggleEditLayout();
+        this.fetchData();
+      },
+      error: (err: any) => alert('Error guardando distribución: ' + (err.error?.detail || err.message))
     });
   }
 }

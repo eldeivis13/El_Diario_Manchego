@@ -18,6 +18,10 @@ export class ArticlesService {
     return this.http.get<Article>(`${this.apiUrl}/${id}`);
   }
 
+  updateHomeLayout(layoutBatch: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/update-layout`, layoutBatch);
+  }
+
   getArticlesBySection(sectionName: string): Observable<Article[]> {
     return this.http.get<Article[]>(`${this.apiUrl}/category/${sectionName}`);
   }
