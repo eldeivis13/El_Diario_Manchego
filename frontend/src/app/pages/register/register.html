@@ -5,8 +5,8 @@
       <span class="brand-accent">Manchego</span>
     </div>
     
-    <h2>Crea tu cuenta de Redactor</h2>
-    <p class="subtitle">Únete a nuestro equipo y empieza a escribir.</p>
+    <h2>Crea tu cuenta profesional</h2>
+    <p class="subtitle">Únete al equipo editorial de El Diario Manchego.</p>
 
     <!-- Error Alert -->
     <div class="alert alert-error" *ngIf="errorMessage()">
@@ -42,6 +42,22 @@
           required 
           autocomplete="email"
           placeholder="miguel@manchego.com">
+      </div>
+
+      <div class="input-group">
+        <label>Tipo de Perfil</label>
+        <div class="role-selector">
+          <label class="role-option" [class.active]="rol === 'REDACTOR'">
+            <input type="radio" name="rol" value="REDACTOR" [(ngModel)]="rol">
+            <span class="role-name">Redactor</span>
+            <span class="role-desc">Escribe y gestiona tus noticias</span>
+          </label>
+          <label class="role-option" [class.active]="rol === 'EDITOR'">
+            <input type="radio" name="rol" value="EDITOR" [(ngModel)]="rol">
+            <span class="role-name">Editor</span>
+            <span class="role-desc">Revisa y publica artículos</span>
+          </label>
+        </div>
       </div>
 
       <div class="input-group">

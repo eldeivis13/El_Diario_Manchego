@@ -141,6 +141,78 @@ $article-transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   text-wrap: balance;
 }
 
+.article-author-box {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 107, 107, 0.2);
+    transform: translateX(5px);
+  }
+
+  .author-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px; // Squirrel shape
+    background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(220, 53, 69, 0.2);
+  }
+
+  .author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .author-info-main {
+      display: flex;
+      gap: 0.4rem;
+      align-items: baseline;
+
+      .by-text {
+        font-size: 0.9rem;
+        color: #71717a;
+      }
+
+      .author-name-link {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.01em;
+      }
+    }
+
+    .article-info-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: #a1a1aa;
+
+      .meta-separator {
+        color: rgba(255, 255, 255, 0.2);
+      }
+
+      .meta-item {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 // Author Box
 .article-author {
   display: flex;

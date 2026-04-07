@@ -67,16 +67,20 @@
           </svg>
           Eliminar Noticia Definitivamente
         </button>
-      </div>
-
-      <div class="article-author">
-        <div class="author-avatar">A</div>
-        <div class="author-info">
-          <p class="author-name">Redacción EDC</p>
-          <p class="author-role">Periodista</p>
+      </div>      <div class="article-author-box" *ngIf="data.autor_name || 'Redacción El Diario Manchego'">
+        <div class="author-avatar">{{ (data.autor_name || 'R')[0] | uppercase }}</div>
+        <div class="author-details">
+          <div class="author-info-main">
+            <span class="by-text">Publicado por</span>
+            <span class="author-name-link">{{ data.autor_name || 'Redacción El Diario Manchego' }}</span>
+          </div>
+          <div class="article-info-meta">
+            <span class="meta-item">Periodista Editorial</span>
+            <span class="meta-separator">•</span>
+            <span class="meta-item">4 min de lectura</span>
+          </div>
         </div>
       </div>
-
       <!-- Main Text -->
       <div class="article-text">
         <!-- Since we don't have rich HTML text right now, we format plain text nicely -->

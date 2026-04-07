@@ -142,11 +142,13 @@ async def get_articles():
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.portada_order, a.portada_size, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
+                SELECT a.id, a.titulo, a.contenido, a.estado, a.fecha_publicacion, a.section_id, a.portada_order, a.portada_size, a.imagen_url AS customPhotoUrl, s.nombre as section_name, u.nombre AS autor_name 
                 FROM articles a 
                 LEFT JOIN sections s ON a.section_id = s.id
+                LEFT JOIN users u ON a.autor_id = u.id
                 WHERE a.estado = 'PUBLICADO'
                 ORDER BY a.portada_order ASC, a.fecha_publicacion DESC
+                LIMIT 6
                 """
             )
             articles = await cursor.fetchall()
@@ -184,9 +186,10 @@ async def get_article_by_id(id: int, user_id: int = Depends(get_current_user)):
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT a.*, a.imagen_url AS customPhotoUrl, s.nombre as section_name 
+                SELECT a.*, a.imagen_url AS customPhotoUrl, s.nombre as section_name, u.nombre AS autor_name 
                 FROM articles a 
-                LEFT JOIN sections s ON a.section_id = s.id 
+                LEFT JOIN sections s ON a.section_id = s.id
+                LEFT JOIN users u ON a.autor_id = u.id
                 WHERE a.id=%s
                 """,
                 (id,)

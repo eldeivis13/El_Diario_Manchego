@@ -55,6 +55,8 @@ class ArticleResponse(BaseModel):
     editor_id: Optional[int] = None
     editor_name: Optional[str] = None
     customPhotoUrl: Optional[str] = None
+    autor_id: Optional[int] = None
+    autor_name: Optional[str] = None
     portada_order: Optional[int] = 0
     portada_size: Optional[str] = "normal"
 

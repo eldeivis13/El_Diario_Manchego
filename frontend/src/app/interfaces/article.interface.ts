@@ -10,4 +10,5 @@ export interface Article {
   customPhotoUrl?: string | null;
   portada_size?: string;
   portada_order?: number;
+  autor_name?: string;
 }

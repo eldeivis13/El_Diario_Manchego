@@ -18,7 +18,6 @@ export class RegisterComponent {
   nombre = '';
   email = '';
   password = '';
-  // Redactors register themselves. Editors are usually created by admins, but we'll leave it fixed or selectable. Requirements focus on "Redactores pueden registrarse".
   rol = 'REDACTOR'; 
   
   isLoading = signal(false);
