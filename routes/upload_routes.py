@@ -1,7 +1,8 @@
 import os
 import uuid
+# pyrefly: ignore [missing-import]
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from core.dependences import is_redactor
+from core.dependences import get_current_user
 
 router = APIRouter()
 
@@ -11,6 +12,9 @@ UPLOADS_DIR = os.path.join(
     "frontend", "public", "uploads"
 )
 
+# URL base del servidor (configurable por variable de entorno)
+BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
+
 # Extensiones permitidas
 EXTENSIONES_PERMITIDAS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 TAMANO_MAXIMO_MB = 5
@@ -19,11 +23,11 @@ TAMANO_MAXIMO_MB = 5
 @router.post("/upload-image", status_code=201)
 async def subir_imagen(
     file: UploadFile = File(...),
-    redactor=Depends(is_redactor)
+    usuario=Depends(get_current_user)
 ):
     """
     Sube una imagen al servidor y devuelve la URL pública.
-    Solo accesible para usuarios autenticados (redactores y editores).
+    Accesible para cualquier usuario autenticado (redactores y editores).
     """
     # Validar extensión
     _, ext = os.path.splitext(file.filename or "")
@@ -31,7 +35,7 @@ async def subir_imagen(
     if ext not in EXTENSIONES_PERMITIDAS:
         raise HTTPException(
             status_code=400,
-            detail=f"Formato no permitido. Usa: {', '.join(EXTENSIONES_PERMITIDAS)}"
+            detail=f"Formato no permitido. Usa: {', '.join(sorted(EXTENSIONES_PERMITIDAS))}"
         )
 
     # Leer contenido y validar tamaño
@@ -55,5 +59,6 @@ async def subir_imagen(
         raise HTTPException(status_code=500, detail=f"Error al guardar la imagen: {str(e)}")
 
     # Devolver la URL pública (servida por StaticFiles en /uploads)
-    url_publica = f"http://127.0.0.1:8000/uploads/{nombre_archivo}"
+    url_publica = f"{BASE_URL}/uploads/{nombre_archivo}"
     return {"url": url_publica, "filename": nombre_archivo}
+

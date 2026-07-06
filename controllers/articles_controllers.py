@@ -29,12 +29,14 @@ async def create_article(article: ArticleCreate, user: dict):
                 "INSERT INTO articles (titulo, contenido, estado, autor_id, fecha_publicacion, imagen_url) VALUES (%s, %s, %s, %s, %s, %s)",
                 (article.title, article.content, status, user_id, fecha_pub, article.customPhotoUrl)
             )
+        await conn.commit()
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al insertar en DB: {str(e)}")
     finally:
         conn.close()
 
     return {"msg": "Artículo creado exitosamente"}
+
 
 
 # PUT /articles/(id) -> editar articulo

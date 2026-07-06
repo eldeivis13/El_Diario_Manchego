@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './nueva-publicacion.html',
   styleUrl: './nueva-publicacion.scss'
 })
-export class NuevaPublicacionComponent implements OnInit {
+export class NuevaPublicacionComponent implements OnInit, OnDestroy {
   private articlesService = inject(ArticlesService);
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -27,6 +27,8 @@ export class NuevaPublicacionComponent implements OnInit {
   public previewUrl = signal<string | null>(null);
   /** Archivo seleccionado pendiente de subir */
   private archivoSeleccionado: File | null = null;
+  /** URL blob activa para poder revocarla y evitar memory leaks */
+  private blobUrlActiva: string | null = null;
 
   public isLoading = signal(false);
   public isUploadingImage = signal(false);
@@ -44,14 +46,31 @@ export class NuevaPublicacionComponent implements OnInit {
     }
   }
 
+  /** Libera la blob URL activa si existe */
+  private revocarBlobUrl(): void {
+    if (this.blobUrlActiva) {
+      URL.revokeObjectURL(this.blobUrlActiva);
+      this.blobUrlActiva = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Liberar memoria al abandonar el componente
+    this.revocarBlobUrl();
+  }
+
   /** Maneja la selección de archivo desde el input file */
   onArchivoSeleccionado(evento: Event): void {
     const input = evento.target as HTMLInputElement;
     const archivo = input.files?.[0];
     if (!archivo) return;
 
+    // Revocar blob URL anterior antes de crear una nueva
+    this.revocarBlobUrl();
+
     // Previsualización local instantánea sin esperar a la subida
     const blobUrl = URL.createObjectURL(archivo);
+    this.blobUrlActiva = blobUrl;
     this.previewUrl.set(blobUrl);
 
     // Limpiar URL manual si el usuario selecciona un archivo
@@ -61,6 +80,7 @@ export class NuevaPublicacionComponent implements OnInit {
 
   /** Limpia la imagen seleccionada (archivo o URL) */
   limpiarImagen(): void {
+    this.revocarBlobUrl();
     this.archivoSeleccionado = null;
     this.imageUrl = '';
     this.previewUrl.set(null);

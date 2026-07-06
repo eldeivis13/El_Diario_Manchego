@@ -114,6 +114,7 @@ $glass-border: rgba(255, 255, 255, 0.05);
 
 // ── Zona de subida de imagen ──────────────────────────
 .upload-zone {
+  position: relative; // contiene el input hidden con position absolute
   width: 100%;
   margin-bottom: 1rem;
 
@@ -121,8 +122,11 @@ $glass-border: rgba(255, 255, 255, 0.05);
     position: absolute;
     width: 1px;
     height: 1px;
+    overflow: hidden;
     opacity: 0;
     pointer-events: none;
+    top: 0;
+    left: 0;
   }
 
   .upload-label {
