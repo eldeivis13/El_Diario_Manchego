@@ -38,6 +38,19 @@ export class ArticlesService {
     return this.http.post(`${this.apiUrl}/create`, article);
   }
 
+  /**
+   * Sube una imagen al servidor y devuelve la URL pública.
+   * El backend espera un FormData con la clave `file`.
+   */
+  uploadImage(file: File): Observable<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string; filename: string }>(
+      'http://127.0.0.1:8000/media/upload-image',
+      formData
+    );
+  }
+
   updateArticle(id: number, article: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, article);
   }

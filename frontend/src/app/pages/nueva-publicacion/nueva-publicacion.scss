@@ -112,6 +112,107 @@ $glass-border: rgba(255, 255, 255, 0.05);
   }
 }
 
+// ── Zona de subida de imagen ──────────────────────────
+.upload-zone {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  .file-input-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    min-height: 180px;
+    padding: 2.5rem 2rem;
+    border: 2px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: border-color 0.25s ease, background 0.25s ease;
+    text-align: center;
+    box-sizing: border-box;
+
+    &:hover {
+      border-color: rgba($primary, 0.55);
+      background: rgba($primary, 0.04);
+
+      .upload-icon { transform: scale(1.1); }
+      .upload-btn-inner { background: darken($primary, 5%); }
+    }
+
+    .upload-icon {
+      display: block;
+      font-size: 2.8rem;
+      line-height: 1;
+      margin-bottom: 0.9rem;
+      transition: transform 0.25s ease;
+    }
+
+    .upload-title {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: $text-light;
+      margin-bottom: 0.35rem;
+    }
+
+    .upload-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: $text-muted;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.03em;
+    }
+
+    .upload-btn-inner {
+      display: inline-block;
+      background: $primary;
+      color: #fff;
+      padding: 0.55rem 1.6rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: background 0.2s ease;
+      pointer-events: none; // el clic lo gestiona el <label>
+    }
+  }
+}
+
+
+// ── Separador OR ─────────────────────────────────────
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  color: $text-muted;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+
+
 .image-preview-container {
   margin-bottom: 2rem;
   animation: slideDown 0.4s ease-out;
@@ -201,7 +302,34 @@ $glass-border: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba($primary, 0.2);
     color: lighten($primary, 10%);
   }
+
+  &-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #93c5fd;
+    font-weight: 500;
+  }
 }
+
+// ── Botón limpiar imagen ──────────────────────────────
+.btn-clear-img {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 1rem;
+
+  &:hover {
+    background: rgba($primary, 0.8);
+    border-color: $primary;
+  }
+}
+
 
 .btn-group {
   display: flex;

@@ -1,6 +1,6 @@
 # Project El diario Manchego - AI General Guidelines
 
-Este documento centraliza las reglas generales del asistente de IA para Project El diario Manchego.
+Este documento centraliza las reglas generales del asistente de IA para Project Pagina WEB Drogueria.
 
 ## 🤖 Rol y Perfil
 Eres un experto en Python 3.14.2 con FastAPI y Angular CLI 21.2.4 enfocado en arquitectura escalable bajo MySQL 8.0.45.
@@ -30,7 +30,7 @@ Haremos especial hincapié en Angular, dado que no tenemos mucha experiencia.
 
 ## 📂 Estructura de Contexto Contextual
 
-### BACKEND_EL-DIARIO-MANCHEGO
+### BACKEND_PAGINA-WEB-DROGUERIA
 ```
 		.venv/
 		controllers/
@@ -45,7 +45,7 @@ Haremos especial hincapié en Angular, dado que no tenemos mucha experiencia.
 	requirements.txt
 ```
 
-### FRONTEND_EL-DIARIO-MANCHEGO
+### FRONTEND_PAGINA-WEB-DROGUERIA
 ```
 	frontend/
 		.angular/
@@ -61,14 +61,9 @@ Haremos especial hincapié en Angular, dado que no tenemos mucha experiencia.
 				interceptors/
 				interfaces/
 				pages/
-					articulo/
+					producto/
 					home/
 					login/
-					sdeportes/
-					seconomia/
-					spolitica/
-					ssociedad/
-					stecnologia/
 				services/
 				app.config.server.ts
 				app.config.ts

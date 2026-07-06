@@ -9,14 +9,15 @@
     <!-- Form Area -->
     <div class="form-wrapper" *ngIf="!isSuccess(); else successTpl">
       <form (ngSubmit)="onSubmit()" #articleForm="ngForm" class="article-form">
+
         <!-- Title Input -->
         <div class="input-group">
           <label for="title">Título de la Noticia</label>
-          <input 
-            type="text" 
-            id="title" 
-            name="title" 
-            [(ngModel)]="title" 
+          <input
+            type="text"
+            id="title"
+            name="title"
+            [(ngModel)]="title"
             placeholder="Introduce un titular impactante..."
             required
             #titleInput="ngModel">
@@ -26,10 +27,10 @@
         <!-- Content Area -->
         <div class="input-group">
           <label for="content">Contenido</label>
-          <textarea 
-            id="content" 
-            name="content" 
-            [(ngModel)]="content" 
+          <textarea
+            id="content"
+            name="content"
+            [(ngModel)]="content"
             placeholder="Escribe aquí el cuerpo del artículo..."
             rows="10"
             required
@@ -37,40 +38,67 @@
           <div class="error-hint" *ngIf="contentInput.touched && contentInput.invalid">El contenido no puede estar vacío.</div>
         </div>
 
-        <!-- Image URL Input -->
+        <!-- ── IMAGEN ── -->
         <div class="input-group">
-          <label for="imageUrl">URL de la Imagen (Opcional)</label>
-          <div class="url-input-container">
-            <input 
-              type="text" 
-              id="imageUrl" 
-              name="imageUrl" 
-              [(ngModel)]="imageUrl" 
-              placeholder="https://images.unsplash.com/photo-...">
-          </div>
-          <p class="hint-text">Pega un enlace directo a una imagen para personalizar la portada de tu noticia.</p>
-        </div>
+          <label>Imagen de Portada (Opcional)</label>
 
-        <!-- Live Preview -->
-        <div class="image-preview-container" *ngIf="imageUrl">
-          <label>Previsualización de Portada</label>
-          <div class="preview-card">
-            <img [src]="imageUrl" alt="Preview" (error)="imageUrl = ''">
-            <div class="preview-overlay">
-              <span>Vista Previa</span>
+          <!-- Selector de archivo -->
+          <div class="upload-zone" *ngIf="!previewUrl()">
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              class="file-input-hidden"
+              (change)="onArchivoSeleccionado($event)">
+            <label for="fileInput" class="upload-label">
+              <span class="upload-icon">📷</span>
+              <span class="upload-title">Sube una foto desde tu ordenador</span>
+              <span class="upload-hint">JPG, PNG, GIF, WebP &nbsp;·&nbsp; Máx. 5 MB</span>
+              <span class="upload-btn-inner">Seleccionar archivo</span>
+            </label>
+          </div>
+
+
+          <!-- Separador OR -->
+          <div class="or-divider" *ngIf="!previewUrl()">
+            <span>o pega una URL</span>
+          </div>
+
+          <!-- URL manual -->
+          <div class="url-input-container" *ngIf="!previewUrl()">
+            <input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              [(ngModel)]="imageUrl"
+              (ngModelChange)="onUrlManualCambia()"
+              placeholder="https://images.unsplash.com/photo-...">
+            <p class="hint-text">Enlace directo a una imagen externa.</p>
+          </div>
+
+          <!-- Previsualización -->
+          <div class="image-preview-container" *ngIf="previewUrl()">
+            <label>Previsualización de Portada</label>
+            <div class="preview-card">
+              <img [src]="previewUrl()" alt="Preview" (error)="limpiarImagen()">
+              <div class="preview-overlay">
+                <span>Vista Previa</span>
+                <button type="button" class="btn-clear-img" (click)="limpiarImagen()">✕ Cambiar imagen</button>
+              </div>
             </div>
           </div>
         </div>
+        <!-- ── FIN IMAGEN ── -->
 
         <!-- Date + Meta -->
         <div class="form-row">
           <div class="input-group">
             <label for="fpublicacion">Fecha prevista de publicación</label>
-            <input 
-              type="text" 
-              id="fpublicacion" 
-              name="fpublicacion" 
-              [(ngModel)]="fpublicacion" 
+            <input
+              type="text"
+              id="fpublicacion"
+              name="fpublicacion"
+              [(ngModel)]="fpublicacion"
               placeholder="DD/MM/YYYY"
               required>
           </div>
@@ -78,6 +106,11 @@
             <label>Estado Inicial</label>
             <div class="badge-status">BORRADOR</div>
           </div>
+        </div>
+
+        <!-- Uploading indicator -->
+        <div class="alert alert-info" *ngIf="isUploadingImage()">
+          ⏳ Subiendo imagen al servidor...
         </div>
 
         <!-- Alert messages -->
